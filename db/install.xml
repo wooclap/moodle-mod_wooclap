@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/wooclap/db" VERSION="20151204" COMMENT="XMLDB file for Moodle mod/wooclap"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="wooclap" COMMENT="This table contains Basic Wooclap activities instances">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course Wooclap activity belongs to"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name field for moodle instances"/>
+        <FIELD NAME="intro" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Description of the Wooclap activity"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="editurl" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Remote edition url"/>
+        <FIELD NAME="quiz" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="authorid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="customcompletion" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="0=disabled,1=enabled"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="wooclapeventid" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap ID of the event related to the activity"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="wooclap_completion" COMMENT="Keeps track of individual completion for Wooclap activities.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="wooclapid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the Wooclap activity"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="completionstatus" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="1=open,2=success,3=failed"/>
+        <FIELD NAME="grade" TYPE="number" LENGTH="10" NOTNULL="true" SEQUENCE="false" DECIMALS="5"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="wooclapid" UNIQUE="false" FIELDS="wooclapid"/>
+        <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

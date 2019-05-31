@@ -1,0 +1,31 @@
+{
+  "name": "wooclap-moodle-mod",
+  "version": "1.0.0",
+  "description": "https://tasks.internal.cblue.be/projects/wooclap/wiki",
+  "main": "index.js",
+  "scripts": {
+    "release": "node ./scripts/release --upgrade",
+    "zip": "node ./scripts/release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.cblue.be:cblue-moodle-projects/WOOCLAP/mod_wooclap.git"
+  },
+  "keywords": [],
+  "author": "Jonathan Alzetta <jonathan@wooclap.com>",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.4.11",
+    "bluebird": "^3.5.2",
+    "copy": "^0.3.2",
+    "folder-zip": "0.0.5",
+    "fs-extra": "^7.0.0",
+    "minimist": "^1.2.0",
+    "moment": "^2.24.0",
+    "opn": "^5.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-prettier": "^4.3.0"
+  }
+}
