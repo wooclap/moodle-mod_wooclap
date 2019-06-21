@@ -41,7 +41,7 @@ $callback = optional_param('callbackUrl', '', PARAM_URL);
 
 try {
     $data_token = [
-        'accessKeyId' => wooclap_get_accesskeyid(),
+        'accessKeyId' => get_config('wooclap', 'accesskeyid'),
         'completion' => $completion,
         'moodleUserId' => $userid,
         'score' => $score,
@@ -80,5 +80,4 @@ try {
     }
 } catch (Exception $e) {
     print_error('error-couldnotupdatereport', 'wooclap');
-    header("HTTP/1.0 500");
 }

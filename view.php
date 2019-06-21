@@ -67,7 +67,7 @@ if (is_object($cm) && is_object($wooclap)) {
     if (isset($USER)) {
         $ts = get_isotime();
         try {
-            $accesskeyid = wooclap_get_accesskeyid();
+            $accesskeyid = get_config('wooclap', 'accesskeyid');
         } catch (Exception $e) {
             echo $e->getMessage();
         }

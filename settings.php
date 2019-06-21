@@ -27,18 +27,18 @@ if ($ADMIN->fulltree) {
     $defaultBaseUrl = 'https://app.wooclap.com';
     $settings->add(new admin_setting_heading('wooclap/config', get_string('wooclapsettings', 'wooclap'), ''));
     $settings->add(new admin_setting_configtext_with_maxlength(
-        'wooclap/secretaccesskey',
-        get_string('secretaccesskey', 'wooclap'),
-        get_string('secretaccesskey-description', 'wooclap'),
+        'wooclap/accesskeyid',
+        get_string('accesskeyid', 'wooclap'),
+        get_string('accesskeyid-description', 'wooclap'),
         '',
         PARAM_RAW_TRIMMED,
         50,
         128
     ));
     $settings->add(new admin_setting_configtext_with_maxlength(
-        'wooclap/accesskeyid',
-        get_string('accesskeyid', 'wooclap'),
-        get_string('accesskeyid-description', 'wooclap'),
+        'wooclap/secretaccesskey',
+        get_string('secretaccesskey', 'wooclap'),
+        get_string('secretaccesskey-description', 'wooclap'),
         '',
         PARAM_RAW_TRIMMED,
         50,

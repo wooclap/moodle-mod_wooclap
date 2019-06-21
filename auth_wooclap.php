@@ -44,7 +44,6 @@ if (isset($SESSION)) {
     $SESSION->wooclap_callback = $callback;
 } else {
     print_error('error-auth-nosession', 'wooclap');
-    header("HTTP/1.0 500");
 }
 
 try {
@@ -63,5 +62,4 @@ try {
     }
 } catch (Exception $exc) {
     print_error('error-couldnotredirect', 'wooclap');
-    header("HTTP/1.0 500");
 }

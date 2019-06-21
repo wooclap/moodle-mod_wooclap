@@ -154,21 +154,8 @@ function wooclap_get_instance($id) {
 /**
  * @return string
  */
-function wooclap_get_base_url() {
-    global $DB;
-    $sql = "SELECT value FROM {config_plugins} WHERE plugin='wooclap' AND name='baseurl'";
-    try {
-        return $DB->get_record_sql($sql, [], MUST_EXIST)->value;
-    } catch (Exception $e) {
-        throw new Exception('BaseUrl missing!');
-    }
-}
-
-/**
- * @return string
- */
 function wooclap_get_create_url() {
-    $baseurl = wooclap_get_base_url();
+    $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
     return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/events';
 }
@@ -177,46 +164,18 @@ function wooclap_get_create_url() {
  * @return string
  */
 function wooclap_get_events_list_url() {
-    $baseurl = wooclap_get_base_url();
+    $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
     return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/events_list';
-}
-
-/**
- * @return mixed
- * @throws Exception
- */
-function wooclap_get_secretaccesskey() {
-    global $DB;
-    $sql = "SELECT value FROM {config_plugins} WHERE plugin='wooclap' AND name='secretaccesskey'";
-    try {
-        return $DB->get_record_sql($sql, [], MUST_EXIST)->value;
-    } catch (Exception $e) {
-        throw new Exception('SecretAccessKey missing!');
-    }
 }
 
 /**
  * @return string
  */
 function wooclap_get_ping_url() {
-    $baseurl = wooclap_get_base_url();
+    $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
     return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/ping';
-}
-
-/**
- * @return mixed
- * @throws Exception
- */
-function wooclap_get_accesskeyid() {
-    global $DB;
-    $sql = "SELECT value FROM {config_plugins} WHERE plugin='wooclap' AND name='accesskeyid'";
-    try {
-        return $DB->get_record_sql($sql, [], MUST_EXIST)->value;
-    } catch (Exception $e) {
-        throw new Exception('AccessKeyId missing!');
-    }
 }
 
 /**
@@ -225,7 +184,7 @@ function wooclap_get_accesskeyid() {
  * @throws Exception
  */
 function wooclap_generate_token($data) {
-    return hash_hmac('sha256', $data, wooclap_get_secretaccesskey());
+    return hash_hmac('sha256', $data, get_config('wooclap', 'secretaccesskey'));
 }
 
 /**
@@ -274,10 +233,9 @@ function wooclap_redirect_auth($userid) {
         $course_context = context_course::instance($cm->course);
         $userdb = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
         $activity = $DB->get_record('wooclap', ['id' => $cm->instance], '*', MUST_EXIST);
-        $accesskeyid = wooclap_get_accesskeyid();
+        $accesskeyid = get_config('wooclap', 'accesskeyid');
     } catch (Exception $e) {
         print_error('error-couldnotauth', 'wooclap');
-        header("HTTP/1.0 500");
     }
 
     $role = wooclap_get_role($course_context);
@@ -309,7 +267,7 @@ function wooclap_redirect_auth($userid) {
 
     $callback_url = wooclap_validate_callback_url($SESSION->wooclap_callback);
 
-    header('Location: ' . $callback_url . '?' . wooclap_http_build_query($data));
+    redirect($callback_url . '?' . wooclap_http_build_query($data));
 }
 
 /**
@@ -323,7 +281,7 @@ function get_ping_status() {
     $ts = get_isotime();
 
     try {
-        $accesskeyid = wooclap_get_accesskeyid();
+        $accesskeyid = get_config('wooclap', 'accesskeyid');
     } catch (Exception $e) {
         // Could not get access key id => ping can be considered failed.
         return false;
@@ -357,7 +315,7 @@ function get_ping_status() {
     }
 
     $response_data = json_decode($response);
-    return true;
+    return $response_data->keysAreValid;
 }
 
 /**
@@ -383,130 +341,8 @@ function wooclap_validate_callback_url($callback_url) {
     }
     if (!filter_var($callback_url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
         print_error('error-callback-is-not-url', 'wooclap');
-        header("HTTP/1.0 500");
     }
     return $callback_url;
-}
-
-/**
- * Common setup for all pages for editing questions.
- * @param string $baseurl the name of the script calling this function. For example 'question/edit.php'.
- * @param string $edittab code for this edit tab
- * @param bool $requirecmid require cmid? default false
- * @param bool $unused no longer used, do no pass
- * @return array $thispageurl, $contexts, $cmid, $cm, $module, $pagevars
- * @throws coding_exception
- * @throws dml_exception
- * @throws moodle_exception
- * @throws require_login_exception
- */
-function wooclap_question_edit_setup($edittab, $baseurl, $requirecmid = false, $unused = null) {
-    global $DB, $PAGE, $CFG;
-
-    if ($unused !== null) {
-        debugging('Deprecated argument passed to wooclap_question_edit_setup()', DEBUG_DEVELOPER);
-    }
-
-    $thispageurl = new moodle_url($baseurl);
-    // We are going to explicitly add back everything important
-    // This avoids unwanted params from being retained.
-    $thispageurl->remove_all_params();
-
-    $courseid = $requirecmid;
-    $cmid = optional_param('cmid', 0, PARAM_INT);
-    if ($cmid) {
-        list($module, $cm) = get_module_from_cmid($cmid);
-        $courseid = $cm->course;
-        $thispageurl->params(compact('cmid'));
-        require_login($courseid, false, $cm);
-        $thiscontext = context_module::instance($cmid);
-    } else {
-        $module = null;
-        $cm = null;
-        $thispageurl->params(compact('courseid'));
-        $thiscontext = context_course::instance($courseid);
-    }
-
-    if ($thiscontext) {
-        $contexts = new question_edit_contexts($thiscontext);
-        $contexts->require_one_edit_tab_cap($edittab);
-    } else {
-        $contexts = null;
-    }
-
-    $PAGE->set_pagelayout('admin');
-
-    $pagevars['qpage'] = optional_param('qpage', -1, PARAM_INT);
-
-    // Pass 'cat' from page to page and when 'category' comes from a drop down menu
-    // then we also reset the qpage so we go to page 1 of
-    // a new cat.
-    $pagevars['cat'] = optional_param('cat', 0, PARAM_SEQUENCE); // if empty will be set up later
-    if ($category = optional_param('category', 0, PARAM_SEQUENCE)) {
-        if ($pagevars['cat'] != $category) {
-            // is this a move to a new category?
-            $pagevars['cat'] = $category;
-            $pagevars['qpage'] = 0;
-        }
-    }
-    if ($pagevars['cat']) {
-        $thispageurl->param('cat', $pagevars['cat']);
-    }
-    if (strpos($baseurl, '/question/') === 0) {
-        navigation_node::override_active_url($thispageurl);
-    }
-
-    if ($pagevars['qpage'] > -1) {
-        $thispageurl->param('qpage', $pagevars['qpage']);
-    } else {
-        $pagevars['qpage'] = 0;
-    }
-
-    $pagevars['qperpage'] = question_get_display_preference(
-        'qperpage',
-        DEFAULT_QUESTIONS_PER_PAGE,
-        PARAM_INT,
-        $thispageurl
-    );
-
-    for ($i = 1; $i <= question_bank_view::MAX_SORTS; $i++) {
-        $param = 'qbs' . $i;
-        if (!$sort = optional_param($param, '', PARAM_TEXT)) {
-            break;
-        }
-        $thispageurl->param($param, $sort);
-    }
-
-    $defaultcategory = question_make_default_categories($contexts->all());
-
-    $contextlistarr = [];
-    foreach ($contexts->having_one_edit_tab_cap($edittab) as $context) {
-        $contextlistarr[] = "'{$context->id}'";
-    }
-    $contextlist = join($contextlistarr, ' ,');
-    if (!empty($pagevars['cat'])) {
-        $catparts = explode(',', $pagevars['cat']);
-        if (!$catparts[0] || (false !== array_search($catparts[1], $contextlistarr)) ||
-            !$DB->count_records_select("question_categories", "id = ? AND contextid = ?", [$catparts[0], $catparts[1]])) {
-            print_error('invalidcategory', 'question');
-        }
-    } else {
-        $category = $defaultcategory;
-        $pagevars['cat'] = "{$category->id},{$category->contextid}";
-    }
-
-    // Display options.
-    $pagevars['recurse'] = question_get_display_preference('recurse', 1, PARAM_BOOL, $thispageurl);
-    $pagevars['showhidden'] = question_get_display_preference('showhidden', 0, PARAM_BOOL, $thispageurl);
-    $pagevars['qbshowtext'] = question_get_display_preference('qbshowtext', 0, PARAM_BOOL, $thispageurl);
-
-    // Category list page.
-    $pagevars['cpage'] = optional_param('cpage', 1, PARAM_INT);
-    if ($pagevars['cpage'] != 1) {
-        $thispageurl->param('cpage', $pagevars['cpage']);
-    }
-
-    return [$thispageurl, $contexts, $cmid, $cm, $module, $pagevars];
 }
 
 /**

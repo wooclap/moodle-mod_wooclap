@@ -22,23 +22,27 @@ require_once $CFG->dirroot . '/mod/wooclap/lib.php';
  * 'Test connection' button in the Settings page
  *
  */
-class mod_wooclap_test_connection extends admin_setting_heading {
+class mod_wooclap_test_connection extends admin_setting_heading
+{
+  /**
+   * Returns an HTML string
+   *
+   * @param string $data
+   * @param string $query
+   * @return string Returns an HTML string
+   */
+  public function output_html($data, $query = '')
+  {
+    $isPingOk = get_ping_status();
 
-    /**
-     * Returns an HTML string
-     *
-     * @param string $data
-     * @param string $query
-     * @return string Returns an HTML string
-     */
-    public function output_html($data, $query = '') {
-
-        $isPingOk = get_ping_status();
-
-        if ($isPingOk) {
-            return '<p style="color: green;">' . get_string('pingOK', 'wooclap') . '</p>';
-        } else {
-            return '<p style="color: red;">' . get_string('pingNOTOK', 'wooclap') . '</p>';
-        }
+    if ($isPingOk) {
+      return '<div role="alert" style="color: #306030; background-color: #def1de; padding: .75rem 1.25rem; margin-bottom: 1rem;">' .
+        get_string('pingOK', 'wooclap') .
+        '</div>';
+    } else {
+      return '<div role="alert" style="color: #712b29; background-color: #f7dddc; padding: .75rem 1.25rem; margin-bottom: 1rem;">' .
+        get_string('pingNOTOK', 'wooclap') .
+        '</div>';
     }
+  }
 }

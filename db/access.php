@@ -23,7 +23,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = [
-    // Whether the user can see the link to wooclap and follow it.
     'mod/wooclap:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -35,7 +34,6 @@ $capabilities = [
         ],
     ],
 
-    // Add a wooclap activity to a course.
     'mod/wooclap:addinstance' => [
         'riskbitmask' => RISK_XSS,
 
@@ -46,20 +44,5 @@ $capabilities = [
             'manager' => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
-    ],
-
-    // When the user arrives at the external tool, if they have this capability
-    // in Moodle, then they are given the Instructor role in the remote system,
-    // otherwise they are given Learner.
-    'mod/wooclap:manage' => [
-        'riskbitmask' => RISK_PERSONAL, // A bit of a guess, but seems likely.
-
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => [
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        ],
     ],
 ];

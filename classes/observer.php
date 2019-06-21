@@ -114,7 +114,7 @@ class mod_wooclap_observer {
 
         $ts = get_isotime();
         try {
-            $accesskeyid = wooclap_get_accesskeyid();
+            $accesskeyid = get_config('wooclap', 'accesskeyid');
         } catch (Exception $exc) {
             echo "<h1>Missing AccesKeyId parameter</h1>";
             echo $exc->getMessage();
