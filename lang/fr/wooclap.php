@@ -47,7 +47,7 @@ $string['baseurl'] = 'URL du webservice';
 $string['baseurl-description'] = 'Sert uniquement au débogage ou au test. Ne modifiez cette valeur que si demandé par le support Wooclap.';
 $string['nowooclap'] = 'Il n\'y a pas d\'instance Wooclap';
 $string['gradeupdateok'] = 'Mise à jour de la note effectuée avec succès';
-$string['gradeupdatefailed'] = 'La mise à jour du grade a échoué';
+$string['gradeupdatefailed'] = 'La mise à jour de la note a échoué';
 $string['customcompletion'] = 'Suivi d\'achèvement mis à jour uniquement par Wooclap';
 $string['customcompletiongroup'] = 'Conditions de suivi d\'achèvement Wooclap';
 
