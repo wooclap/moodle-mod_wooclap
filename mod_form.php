@@ -112,7 +112,8 @@ class mod_wooclap_mod_form extends moodleform_mod {
 
         $curl = new wooclap_curl();
         $headers = [];
-        $headers[] = "Content-Type: application/json";
+        $headers[0] = "Content-Type: application/json";
+        $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
         $curl->setHeader($headers);
         $response = $curl->get(
             $eventsListUrl . '?' . wooclap_http_build_query($curl_data)

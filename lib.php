@@ -303,7 +303,8 @@ function get_ping_status() {
 
     $curl = new wooclap_curl();
     $headers = [];
-    $headers[] = "Content-Type: application/json";
+    $headers[0] = "Content-Type: application/json";
+    $headers[1] ="X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
     $curl->setHeader($headers);
     $response = $curl->get(
         $ping_url . '?' . wooclap_http_build_query($data)
