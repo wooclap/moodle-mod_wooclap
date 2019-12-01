@@ -100,6 +100,7 @@ class mod_wooclap_mod_form extends moodleform_mod {
             'accessKeyId' => $accesskeyid,
             'moodleUserId' => intval($USER->id),
             'ts' => $ts,
+            'version' => get_config('mod_wooclap')->version,
         ];
 
         $curl_data = new StdClass;
@@ -109,6 +110,7 @@ class mod_wooclap_mod_form extends moodleform_mod {
         $curl_data->token = wooclap_generate_token(
             'EVENTS_LIST?' . wooclap_http_build_query($data_token)
         );
+        $curl_data->version = get_config('mod_wooclap')->version;
 
         $curl = new wooclap_curl();
         $headers = [];

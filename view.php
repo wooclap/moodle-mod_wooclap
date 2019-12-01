@@ -72,31 +72,34 @@ if (is_object($cm) && is_object($wooclap)) {
             echo $e->getMessage();
         }
 
-        // If user has the teacher role, we send the author id to Wooclap,
-        // so that the teacher interface is displayed in the Wooclap iframe.
         $role = wooclap_get_role(context_course::instance($cm->course));
-        $wooclapuserid = $role === 'teacher' ? $wooclap->authorid : $USER->id;
+        $canEdit = $role == 'teacher';
+        $wooclapuserid = $USER->id;
 
         $data_token = [
             'accessKeyId' => $accesskeyid,
+            'canEdit' => $canEdit,
             'id' => $wooclap->id,
             'moodleUserId' => $wooclapuserid,
             'ts' => $ts,
+            'version' => get_config('mod_wooclap')->version,
         ];
         $token = wooclap_generate_token('JOIN?' . wooclap_http_build_query($data_token));
 
         $data_frame = [
-            'id' => $wooclap->id,
-            'moodleUserId' => $wooclapuserid,
-            'displayName' => $USER->firstname . ' ' . $USER->lastname,
-            'firstName' => $USER->firstname,
-            'lastName' => $USER->lastname,
-            'hasAccess' => wooclap_check_activity_user_access($cm->course, $cm->id, $USER->id),
-            'email' => $USER->email,
-            'role' => $role,
             'accessKeyId' => $accesskeyid,
-            'ts' => $ts,
+            'canEdit' => $canEdit,
+            'displayName' => $USER->firstname . ' ' . $USER->lastname,
+            'email' => $USER->email,
+            'firstName' => $USER->firstname,
+            'hasAccess' => wooclap_check_activity_user_access($cm->course, $cm->id, $USER->id),
+            'id' => $wooclap->id,
+            'lastName' => $USER->lastname,
+            'moodleUserId' => $wooclapuserid,
+            'role' => $role,
             'token' => $token,
+            'ts' => $ts,
+            'version' => get_config('mod_wooclap')->version,
         ];
 
         wooclap_frame_view($wooclap->editurl . '?' . wooclap_http_build_query($data_frame));

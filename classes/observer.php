@@ -147,6 +147,7 @@ class mod_wooclap_observer {
             'name' => $event->other['name'],
             'reportUrl' => $report_url,
             'ts' => $ts,
+            'version' => get_config('mod_wooclap')->version,
         ];
 
         $curl_data = new StdClass;
@@ -179,6 +180,7 @@ class mod_wooclap_observer {
         $curl_data->token = wooclap_generate_token(
             'CREATE?' . wooclap_http_build_query($data_token)
         );
+        $curl_data->version = get_config('mod_wooclap')->version;
 
         // Call the Wooclap CREATE webservice.
         $curl = new wooclap_curl();
@@ -204,29 +206,35 @@ class mod_wooclap_observer {
         $activity->editurl = $response;
         $DB->update_record('wooclap', $activity);
 
+        $role = wooclap_get_role(context_course::instance($cm->course));
+        $canEdit = $role == 'teacher';
+
         // Make a JOIN Wooclap API call to view Wooclap event in an iframe.
         $ts = get_isotime();
         $data_token = [
             'accessKeyId' => $accesskeyid,
+            'canEdit' => $canEdit,
             'id' => $activity->id,
             'moodleUserId' => $trainer->id,
             'ts' => $ts,
+            'version' => get_config('mod_wooclap')->version,
         ];
         $token = wooclap_generate_token(
             'JOIN?' . wooclap_http_build_query($data_token)
         );
         $data_frame = [
-            'id' => $activity->id,
-            'moodleUserId' => $trainer->id,
-            'displayName' => $displayName,
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $trainer->email,
-            // The role can be hardcoded as only teachers can create courses.
-            'role' => 'teacher',
             'accessKeyId' => $accesskeyid,
-            'ts' => $ts,
+            'canEdit' => $canEdit,
+            'displayName' => $displayName,
+            'email' => $trainer->email,
+            'firstName' => $firstName,
+            'id' => $activity->id,
+            'lastName' => $lastName,
+            'moodleUserId' => $trainer->id,
+            'role' => $role,
             'token' => $token,
+            'ts' => $ts,
+            'version' => get_config('mod_wooclap')->version,
         ];
 
         wooclap_frame_view(

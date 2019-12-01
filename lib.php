@@ -249,6 +249,7 @@ function wooclap_redirect_auth($userid) {
         'moodleUserId' => $userdb->id,
         'role' => $role,
         'ts' => $ts,
+        'version' => get_config('mod_wooclap')->version,
     ];
 
     $data = [
@@ -263,6 +264,7 @@ function wooclap_redirect_auth($userid) {
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
         'token' => wooclap_generate_token('AUTH?' . wooclap_http_build_query($data_token)),
+        'version' => get_config('mod_wooclap')->version,
     ];
 
     $callback_url = wooclap_validate_callback_url($SESSION->wooclap_callback);
@@ -290,11 +292,13 @@ function get_ping_status() {
     $data_token = [
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
+        'version' => get_config('mod_wooclap')->version,
     ];
     $data = [
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
         'token' => wooclap_generate_token('PING?' . wooclap_http_build_query($data_token)),
+        'version' => get_config('mod_wooclap')->version,
     ];
 
     $ping_url = wooclap_get_ping_url();
