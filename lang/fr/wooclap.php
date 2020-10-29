@@ -35,6 +35,8 @@ $string['wooclapintro'] = 'Description de l\'activité';
 $string['modulenamepluralformatted'] = 'Liste des activités Wooclap';
 $string['quiz'] = 'Importer un quiz Moodle';
 $string['wooclapeventid'] = 'Dupliquer un événement Wooclap';
+
+// Settings
 $string['wooclapsettings'] = 'Paramètres';
 $string['testconnection'] = 'Tester la Connexion';
 $string['pingOK'] = 'Connexion établie avec Wooclap';
@@ -45,11 +47,20 @@ $string['accesskeyid'] = 'Identifiant de plateforme (accessKeyId)';
 $string['accesskeyid-description'] = 'Clé d\'accès utilisée pour communiquer avec la plateforme Wooclap. Doit commencer par \'ak.\'.';
 $string['baseurl'] = 'URL du webservice';
 $string['baseurl-description'] = 'Sert uniquement au débogage ou au test. Ne modifiez cette valeur que si demandé par le support Wooclap.';
+
 $string['nowooclap'] = 'Il n\'y a pas d\'instance Wooclap';
 $string['gradeupdateok'] = 'Mise à jour de la note effectuée avec succès';
 $string['gradeupdatefailed'] = 'La mise à jour de la note a échoué';
 $string['customcompletion'] = 'Suivi d\'achèvement mis à jour uniquement par Wooclap';
 $string['customcompletiongroup'] = 'Conditions de suivi d\'achèvement Wooclap';
+
+// Consent screen
+$string['showconsentscreen'] = 'Afficher l\'écran de consentement ?';
+$string['showconsentscreen-description'] = 'Si cette option est active, Wooclap demandera aux participants leur consentement avant de récupérer leur adresse email.';
+$string['consent-screen:description'] = '<b>Wooclap</b> rend les étudiants acteurs de leur apprentissage.';
+$string['consent-screen:explanation'] = 'Pour le bon fonctionnement de certaines opérations, dont l\'envoi d\'un rapport personnalisé à la fin d\'une session, Wooclap demande votre adresse email. Elle ne sera jamais utilisée à des fins marketing. Cliquez sur "J\'accepte" pour partager votre adresse email avec Wooclap, ou "Je refuse" pour continuer sans les fonctionnalités avancées.';
+$string['consent-screen:agree'] = 'J\'accepte';
+$string['consent-screen:disagree'] = 'Je refuse';
 
 // capabilities
 $string['wooclap:view'] = 'Accéder à une activité Wooclap';

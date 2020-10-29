@@ -1,0 +1,126 @@
+.consent-screen {
+  align-items: center;
+  background: rgba(27, 43, 61, .8);
+  color: black;
+  display: flex;
+  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-size: 14px;
+  height: 100%;
+  justify-content: center;
+}
+
+.wrapper {
+  align-items: center;
+  display: flex;
+  font-size: 1.3em;
+  font-weight: 400;
+  height: 100%;
+  margin: 0;
+}
+
+.modal {
+  align-items: center;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  /* max-height: 80vh; */
+  padding: 2em;
+  width: 80%;
+}
+
+.logo {
+  margin: 0 auto 1.5em;
+  max-height: 100px;
+}
+
+.text {
+  margin: 0 0 1.5em;
+  max-width: 500px;
+  text-align: center;
+}
+
+.text+.text {
+  margin-top: 0;
+}
+
+.buttons-wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  max-width: 500px;
+  width: 100%;
+}
+
+.button {
+  align-items: center;
+  background: #146aff;
+  border-radius: 1.3em;
+  border: 2px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 1em;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 120%;
+  min-width: 120px;
+  padding: .5em 1.2em;
+  position: relative;
+  text-decoration: none;
+  transition: all .25s ease;
+}
+
+
+.button:hover {
+  background: transparent;
+  border: 2px solid #146aff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .08), 0 3px 6px rgba(0, 0, 0, .12);
+  color: #146aff;
+}
+
+.button.plain {
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  box-shadow: none;
+  color: #146aff;
+}
+
+.button.plain:hover {
+  background: rgba(20, 106, 255, .04);
+  border: 1px solid #146aff;
+  box-shadow: none;
+}
+
+@media only screen and (max-width: 1024px),
+only screen and (max-height: 768px) {
+  .consent-screen {
+    background-color: white;
+  }
+
+  .wrapper {
+    display: block;
+    /* height: auto; */
+  }
+
+  .modal {
+    /* height: 100%; */
+    box-shadow: none;
+    border-radius: 0;
+    max-height: none;
+    padding: 1.5em 0;
+    width: 100vw;
+  }
+
+  .text,
+  .buttons-wrapper {
+    max-width: 80%;
+  }
+}

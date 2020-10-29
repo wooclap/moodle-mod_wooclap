@@ -74,6 +74,9 @@ if (is_object($cm) && is_object($wooclap)) {
 
         $role = wooclap_get_role(context_course::instance($cm->course));
         $canEdit = $role == 'teacher';
+
+        wooclap_ask_consent_if_not_given($PAGE->url, $role);
+
         $wooclapuserid = $USER->id;
 
         $data_token = [
@@ -90,7 +93,8 @@ if (is_object($cm) && is_object($wooclap)) {
             'accessKeyId' => $accesskeyid,
             'canEdit' => $canEdit,
             'displayName' => $USER->firstname . ' ' . $USER->lastname,
-            'email' => $USER->email,
+            // Only add the email if the user has consented
+            'email' => $SESSION->hasConsented ? $USER->email : '',
             'firstName' => $USER->firstname,
             'hasAccess' => wooclap_check_activity_user_access($cm->course, $cm->id, $USER->id),
             'id' => $wooclap->id,

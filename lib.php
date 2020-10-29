@@ -223,6 +223,8 @@ function wooclap_check_activity_user_access($courseid, $cmid, $userid) {
 function wooclap_redirect_auth($userid) {
     global $DB, $SESSION;
 
+    wooclap_ask_consent_if_not_given();
+
     if (!isset($SESSION->wooclap_courseid) || !isset($SESSION->wooclap_cmid) || !isset($SESSION->wooclap_callback)) {
         print_error('error-missingparameters', 'wooclap');
         header("HTTP/1.0 401");
@@ -258,7 +260,8 @@ function wooclap_redirect_auth($userid) {
         'displayName' => $userdb->firstname . ' ' . $userdb->lastname,
         'firstName' => $userdb->firstname,
         'lastName' => $userdb->lastname,
-        'email' => $userdb->email,
+        // Only add the email if the user has consented
+        'email' => $SESSION->hasConsented ? $userdb->email : '',
         'role' => $role,
         'hasAccess' => $hasAccess,
         'accessKeyId' => $accesskeyid,
@@ -270,6 +273,32 @@ function wooclap_redirect_auth($userid) {
     $callback_url = wooclap_validate_callback_url($SESSION->wooclap_callback);
 
     redirect($callback_url . '?' . wooclap_http_build_query($data));
+}
+
+/**
+ * @throws moodle_exception
+ */
+function wooclap_ask_consent_if_not_given($redirectUrl = null, $role = null)
+{
+    global $CFG, $DB, $SESSION;
+
+    $showConsentScreen = get_config('wooclap', 'showconsentscreen');
+
+    // Consider that consent has been obtained otherwise if the consent screen
+    // is not shown or if it's a teacher.
+    if (!$showConsentScreen || $role == 'teacher') {
+        $SESSION->hasConsented = true;
+    }
+
+    // If the user has not consented yet, redirect them to the consent screen.
+    if (!isset($SESSION->hasConsented)) {
+        redirect(
+            new moodle_url(
+                '/mod/wooclap/wooclap_consent_screen.php',
+                ['redirectUrl' => $redirectUrl]
+            )
+        );
+    }
 }
 
 /**

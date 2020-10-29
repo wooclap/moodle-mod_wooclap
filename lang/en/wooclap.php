@@ -35,6 +35,8 @@ $string['wooclapintro'] = 'Description';
 $string['modulenamepluralformatted'] = 'List of Wooclap activities';
 $string['quiz'] = 'Import a Moodle quiz';
 $string['wooclapeventid'] = 'Duplicate a Wooclap event';
+
+// Settings
 $string['wooclapsettings'] = 'Settings';
 $string['testconnection'] = 'Test Connection';
 $string['pingOK'] = 'Connection established with Wooclap';
@@ -45,11 +47,20 @@ $string['accesskeyid'] = 'Platform Id (accessKeyId)';
 $string['accesskeyid-description'] = 'Access key id used to communicate with Wooclap. Should start with \'ak.\'.';
 $string['baseurl'] = 'Base URL';
 $string['baseurl-description'] = 'This is for debugging or testing only. Only change this value at the request of the Wooclap support team.';
+$string['showconsentscreen'] = 'Show consent screen?';
+$string['showconsentscreen-description'] = 'If active, Wooclap will ask participants for their consent before collecting their email address.';
+
 $string['nowooclap'] = 'There are no Wooclap instances';
 $string['gradeupdateok'] = 'Grade update successful';
 $string['gradeupdatefailed'] = 'Grade update failed';
 $string['customcompletion'] = 'Completion state updated only by Wooclap';
 $string['customcompletiongroup'] = 'Wooclap custom completion';
+
+// Consent screen
+$string['consent-screen:description'] = '<b>Wooclap</b> makes students play an active role in their learning experience.';
+$string['consent-screen:explanation'] = 'In order for some features to work, such as sending a personalised report at the end of a session, Wooclap is asking for your email address. It will never be used for marketing purposes. Click "I agree" to share your email address with Wooclap, or "I disagree" to continue without the extended features.';
+$string['consent-screen:agree'] = 'I agree';
+$string['consent-screen:disagree'] = 'I disagree';
 
 // capabilities
 $string['wooclap:view'] = 'Access a Wooclap activity';

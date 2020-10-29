@@ -53,6 +53,12 @@ if ($ADMIN->fulltree) {
         50,
         256
     ));
+    $settings->add(new admin_setting_configcheckbox(
+        'wooclap/showconsentscreen',
+        get_string('showconsentscreen', 'wooclap'),
+        get_string('showconsentscreen-description', 'wooclap'),
+        false
+    ));
 
     if (class_exists('mod_wooclap_test_connection')) {
         $settings->add(new mod_wooclap_test_connection('wooclap/testconnection', get_string('testconnection', 'wooclap'), ''));
