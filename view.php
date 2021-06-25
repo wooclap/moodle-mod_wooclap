@@ -77,33 +77,53 @@ if (is_object($cm) && is_object($wooclap)) {
 
         wooclap_ask_consent_if_not_given($PAGE->url, $role);
 
-        $wooclapuserid = $USER->id;
+        $auth_url = $CFG->wwwroot
+        . '/mod/wooclap/auth_wooclap.php?id='
+        . $wooclap->id
+        . '&course='
+        . $cm->course
+        . '&cm='
+        . $cm->id;
+
+        $report_url = $CFG->wwwroot
+        . '/mod/wooclap/report_wooclap_v3.php?cm='
+        . $cm->id;
+
+        $course_url = $CFG->wwwroot
+        . '/course/view.php?id='
+        . $cm->course;
 
         $data_token = [
             'accessKeyId' => $accesskeyid,
+            'authUrl' => $auth_url,
             'canEdit' => $canEdit,
-            'id' => $wooclap->id,
-            'moodleUserId' => $wooclapuserid,
+            'courseUrl' => $course_url,
+            'moodleUsername' => $USER->username,
+            'reportUrl' => $report_url,
             'ts' => $ts,
             'version' => get_config('mod_wooclap')->version,
+            'wooclapEventSlug' => $wooclap->linkedwooclapeventslug,
         ];
-        $token = wooclap_generate_token('JOIN?' . wooclap_http_build_query($data_token));
+        $token = wooclap_generate_token('JOINv3?' . wooclap_http_build_query($data_token));
 
         $data_frame = [
             'accessKeyId' => $accesskeyid,
+            'authUrl' => $auth_url,
             'canEdit' => $canEdit,
+            'courseUrl' => $course_url,
             'displayName' => $USER->firstname . ' ' . $USER->lastname,
-            // Only add the email if the user has consented
+            // Only add the email if the user has consented.
             'email' => $SESSION->hasConsented ? $USER->email : '',
             'firstName' => $USER->firstname,
             'hasAccess' => wooclap_check_activity_user_access($cm->course, $cm->id, $USER->id),
-            'id' => $wooclap->id,
             'lastName' => $USER->lastname,
-            'moodleUserId' => $wooclapuserid,
+            'moodleUsername' => $USER->username,
+            'reportUrl' => $report_url,
             'role' => $role,
             'token' => $token,
             'ts' => $ts,
             'version' => get_config('mod_wooclap')->version,
+            'wooclapEventSlug' => $wooclap->linkedwooclapeventslug,
         ];
 
         wooclap_frame_view($wooclap->editurl . '?' . wooclap_http_build_query($data_frame));

@@ -39,6 +39,7 @@ require_once $CFG->dirroot . '/mod/wooclap/format.php';
  */
 function wooclap_supports($feature) {
     switch ($feature) {
+        case FEATURE_BACKUP_MOODLE2:
         case FEATURE_COMPLETION_HAS_RULES:
         case FEATURE_GRADE_HAS_GRADE:
         case FEATURE_GROUPINGS:
@@ -46,7 +47,6 @@ function wooclap_supports($feature) {
         case FEATURE_MOD_INTRO:
         case FEATURE_SHOW_DESCRIPTION:
             return true;
-        case FEATURE_BACKUP_MOODLE2:
         case FEATURE_COMPLETION_TRACKS_VIEWS:
         case FEATURE_GRADE_OUTCOMES:
             return false;
@@ -157,7 +157,7 @@ function wooclap_get_instance($id) {
 function wooclap_get_create_url() {
     $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
-    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/events';
+    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/v3/events';
 }
 
 /**
@@ -166,7 +166,7 @@ function wooclap_get_create_url() {
 function wooclap_get_events_list_url() {
     $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
-    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/events_list';
+    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/v3/events_list';
 }
 
 /**
@@ -175,7 +175,7 @@ function wooclap_get_events_list_url() {
 function wooclap_get_ping_url() {
     $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
-    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/ping';
+    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/v3/ping';
 }
 
 /**
@@ -247,16 +247,15 @@ function wooclap_redirect_auth($userid) {
     $data_token = [
         'accessKeyId' => $accesskeyid,
         'hasAccess' => $hasAccess,
-        'id' => $activity->id,
-        'moodleUserId' => $userdb->id,
+        'moodleUsername' => $userdb->username,
         'role' => $role,
         'ts' => $ts,
         'version' => get_config('mod_wooclap')->version,
+        'wooclapEventSlug' => $activity->linkedwooclapeventslug,
     ];
 
     $data = [
-        'id' => $activity->id,
-        'moodleUserId' => $userdb->id,
+        'moodleUsername' => $userdb->username,
         'displayName' => $userdb->firstname . ' ' . $userdb->lastname,
         'firstName' => $userdb->firstname,
         'lastName' => $userdb->lastname,
@@ -266,8 +265,9 @@ function wooclap_redirect_auth($userid) {
         'hasAccess' => $hasAccess,
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
-        'token' => wooclap_generate_token('AUTH?' . wooclap_http_build_query($data_token)),
+        'token' => wooclap_generate_token('AUTHv3?' . wooclap_http_build_query($data_token)),
         'version' => get_config('mod_wooclap')->version,
+        'wooclapEventSlug' => $activity->linkedwooclapeventslug,
     ];
 
     $callback_url = wooclap_validate_callback_url($SESSION->wooclap_callback);
@@ -278,8 +278,7 @@ function wooclap_redirect_auth($userid) {
 /**
  * @throws moodle_exception
  */
-function wooclap_ask_consent_if_not_given($redirectUrl = null, $role = null)
-{
+function wooclap_ask_consent_if_not_given($redirectUrl = null, $role = null) {
     global $CFG, $DB, $SESSION;
 
     $showConsentScreen = get_config('wooclap', 'showconsentscreen');
@@ -337,7 +336,7 @@ function get_ping_status() {
     $curl = new wooclap_curl();
     $headers = [];
     $headers[0] = "Content-Type: application/json";
-    $headers[1] ="X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
+    $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
     $curl->setHeader($headers);
     $response = $curl->get(
         $ping_url . '?' . wooclap_http_build_query($data)

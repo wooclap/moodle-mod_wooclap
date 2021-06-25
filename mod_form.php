@@ -98,19 +98,19 @@ class mod_wooclap_mod_form extends moodleform_mod {
 
         $data_token = [
             'accessKeyId' => $accesskeyid,
-            'email'=> $USER->email,
-            'moodleUserId' => intval($USER->id),
+            'email' => $USER->email,
+            'moodleUsername' => $USER->username,
             'ts' => $ts,
             'version' => get_config('mod_wooclap')->version,
         ];
 
         $curl_data = new StdClass;
-        $curl_data->moodleUserId = intval($USER->id);
+        $curl_data->moodleUsername = $USER->username;
         $curl_data->accessKeyId = $accesskeyid;
         $curl_data->email = $USER->email;
         $curl_data->ts = $ts;
         $curl_data->token = wooclap_generate_token(
-            'EVENTS_LIST?' . wooclap_http_build_query($data_token)
+            'EVENTS_LIST_V3?' . wooclap_http_build_query($data_token)
         );
         $curl_data->version = get_config('mod_wooclap')->version;
 

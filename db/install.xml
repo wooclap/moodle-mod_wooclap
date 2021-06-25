@@ -17,7 +17,8 @@
         <FIELD NAME="customcompletion" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="0=disabled,1=enabled"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="wooclapeventid" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap ID of the event related to the activity"/>
+        <FIELD NAME="wooclapeventid" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap ID of the event from which this activity was duplicated (if any)"/>
+        <FIELD NAME="linkedwooclapeventslug" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap slug of the event related to the activity"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
