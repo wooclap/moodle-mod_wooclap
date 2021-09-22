@@ -19,7 +19,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 function xmldb_wooclap_upgrade($oldversion) {
-    global $CFG, $DB;
+    global $CFG, $DB, $OUTPUT;
 
     require_once $CFG->libdir . '/db/upgradelib.php';
 
@@ -87,87 +87,19 @@ function xmldb_wooclap_upgrade($oldversion) {
         // - V3_UPGRADE_STEP_1 will return the list of moodle user ids that have a wooclap account.
         // - V3_UPGRADE_STEP_2 will send a mapping from those ids to the moodle usernames to Wooclap.
 
-        $curl = new wooclap_curl();
-        $headers = [];
-        $headers[0] = "Content-Type: application/json";
-        $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
-        $curl->setHeader($headers);
-
-        $ts = get_isotime();
         try {
             $accesskeyid = get_config('wooclap', 'accesskeyid');
-            $version = get_config('mod_wooclap')->version;
-            $baseurl = get_config('wooclap', 'baseurl');
+            $secretaccesskey = get_config('wooclap', 'secretaccesskey');
         } catch (Exception $exc) {
             echo $exc->getMessage();
         }
-        $hastrailingslash = substr($baseurl, -1) === '/';
-
-        // STEP 1.
-        $v3upgradestep1url = $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/v3/upgrade-step-1';
-        $step1datatoken = [
-            'accessKeyId' => $accesskeyid,
-            'ts' => $ts,
-            'version' => $version,
-        ];
-
-        $curl_data_step1 = new StdClass;
-        $curl_data_step1->accessKeyId = $accesskeyid;
-        $curl_data_step1->ts = $ts;
-        $curl_data_step1->token = wooclap_generate_token(
-            'V3_UPGRADE_STEP_1?' . wooclap_http_build_query($step1datatoken)
-        );
-        $curl_data_step1->version = $version;
-
-        $response = $curl->get(
-            $v3upgradestep1url . '?' . wooclap_http_build_query($curl_data_step1)
-        );
-        $curlinfo = $curl->info;
-
-        if ($response && is_array($curlinfo) && $curlinfo['http_code'] == 200) {
-            // STEP 2.
-            $idstousernamesmapping = [];
-
-            foreach (json_decode($response) as $moodleuserid) {
-                $user = $DB->get_record(
-                    'user',
-                    ['id' => $moodleuserid]
-                );
-
-                $idstousernamesmapping[$moodleuserid] = $user->username;
-            }
-
-            $jsonmapping = json_encode($idstousernamesmapping);
-
-            $v3upgradestep2url = $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/v3/upgrade-step-2';
-            $step2datatoken = [
-                'accessKeyId' => $accesskeyid,
-                'idsToUsernamesMapping' => $jsonmapping,
-                'ts' => $ts,
-                'version' => $version,
-            ];
-
-            $curl_data_step2 = new StdClass;
-            $curl_data_step2->accessKeyId = $accesskeyid;
-            $curl_data_step2->idsToUsernamesMapping = $jsonmapping;
-            $curl_data_step2->ts = $ts;
-            $curl_data_step2->token = wooclap_generate_token(
-                'V3_UPGRADE_STEP_2?' . wooclap_http_build_query($step2datatoken)
-            );
-            $curl_data_step2->version = $version;
-
-            $response = $curl->post(
-                $v3upgradestep2url, json_encode($curl_data_step2)
-            );
-            $curlinfo = $curl->info;
-
-            if (!$response || !is_array($curlinfo) || $curlinfo['http_code'] != 200) {
-                print_error('error-couldnotperformv3upgradestep2', 'wooclap');
-            }
+        // Check that plugin is configured.
+        if ( !empty($accesskeyid) && !empty($secretaccesskey)) {
+            mod_wooclap_v3_upgrade();
         } else {
-            print_error('error-couldnotperformv3upgradestep1', 'wooclap');
+            $warn = "Access key and/or secret key are missing for Wooclap plugin. Then considering that plugin is not used. Remote Wooclap upgrade datas steps not executed.";
+            echo $OUTPUT->notification($warn, 'notifyproblem');
         }
-
         // PART 2 of the V3 upgrade.
         // Upgrade existing wooclap activity records
         // editUrl of existing activities must be updated /v2/ -> /v3/.
@@ -189,7 +121,7 @@ function xmldb_wooclap_upgrade($oldversion) {
             }
         }
 
-        upgrade_mod_savepoint(true, 2021050100, 'wooclap');
+        upgrade_mod_savepoint(true, 2021060100, 'wooclap');
     }
 
     return true;
