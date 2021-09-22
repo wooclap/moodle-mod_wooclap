@@ -94,10 +94,10 @@ function xmldb_wooclap_upgrade($oldversion) {
             echo $exc->getMessage();
         }
         // Check that plugin is configured.
-        if ( !empty($accesskeyid) && !empty($secretaccesskey)) {
+        if ( !empty($accesskeyid)) {
             mod_wooclap_v3_upgrade();
         } else {
-            $warn = "Access key and/or secret key are missing for Wooclap plugin. Then considering that plugin is not used. Remote Wooclap upgrade datas steps not executed.";
+            $warn = "Access key is missing for Wooclap plugin. Then considering that plugin is not configured and not  used. Remote Wooclap upgrade datas steps not executed.";
             echo $OUTPUT->notification($warn, 'notifyproblem');
         }
         // PART 2 of the V3 upgrade.
