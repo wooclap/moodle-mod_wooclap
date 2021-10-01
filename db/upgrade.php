@@ -18,6 +18,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once $CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php';
+
 function xmldb_wooclap_upgrade($oldversion) {
     global $CFG, $DB;
 
