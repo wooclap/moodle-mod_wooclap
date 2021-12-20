@@ -38,7 +38,6 @@ $score = required_param('score', PARAM_FLOAT);
 $accessKeyId = required_param('accessKeyId', PARAM_TEXT);
 $ts = required_param('ts', PARAM_TEXT);
 $token = required_param('token', PARAM_TEXT);
-$callback = optional_param('callbackUrl', '', PARAM_URL);
 
 try {
     $data_token = [
@@ -67,20 +66,12 @@ try {
         $userdb = $DB->get_record('user', ['username' => $username], 'id', MUST_EXIST);
 
         $gradestatus = wooclap_update_grade($wooclapinstance, $userdb->id, $score, $completion_param);
-        if ($gradestatus == GRADE_UPDATE_OK) {
-            $callback_message = get_string('gradeupdateok', 'wooclap');
-        } else {
-            $callback_message = get_string('gradeupdatefailed', 'wooclap');
-        }
 
         $completion = new completion_info($course);
         $completion->update_state($cm, $completion_param, $userdb->id);
     } else {
         print_error('error-invalidtoken', 'wooclap');
         header("HTTP/1.0 403");
-    }
-    if ($callback) {
-        redirect($callback, $callback_message);
     }
 } catch (Exception $e) {
     print_error('error-couldnotupdatereport', 'wooclap');

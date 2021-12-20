@@ -26,13 +26,17 @@
 // No login check is expected here because this script checks the login itself
 // @codingStandardsIgnoreLine
 require_once __DIR__ . '/../../config.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once __DIR__ . '/lib.php';
 
 global $SESSION, $USER;
 
 $courseid = required_param('course', PARAM_INT);
 $cmid = required_param('cm', PARAM_INT);
 $callback = required_param('callback', PARAM_URL);
+
+if (!isValidCallbackUrl($callback)) {
+    print_error('error-invalid-callback-url', 'wooclap');
+}
 
 if (isset($USER) && is_object($USER)) {
     $authUser = $USER;

@@ -21,6 +21,11 @@
  * @package mod_wooclap
  * @copyright  2018 CBlue sprl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ *
+ * @see https://github.com/moodle/moodle/blob/master/mod/lesson/lib.php#L1693
+ * @see https://github.com/moodle/moodle/blob/master/mod/resource/lib.php#L207
+ * @see https://docs.moodle.org/dev/Module_visibility_and_display for more info.
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -224,6 +229,10 @@ function wooclap_redirect_auth($userid) {
     global $DB, $SESSION;
 
     wooclap_ask_consent_if_not_given();
+
+    if (!isValidCallbackUrl($SESSION->wooclap_callback)) {
+        print_error('error-invalid-callback-url', 'wooclap');
+    }
 
     if (!isset($SESSION->wooclap_courseid) || !isset($SESSION->wooclap_cmid) || !isset($SESSION->wooclap_callback)) {
         print_error('error-missingparameters', 'wooclap');
@@ -438,8 +447,7 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
  * @return string
  */
 function get_isotime() {
-    $date = new datetime();
-    $date->setTimezone(new DateTimeZone('Etc/Zulu'));
+    $date = new \DateTime("now", new \DateTimeZone("UTC"));
     return $date->format('Y-m-d\TH:i:s\Z');
 }
 
@@ -520,16 +528,28 @@ function wooclap_grade_item_update($wooclapinstance, $grades = null) {
  * @param stdClass $coursemodule The coursemodule object (record).
  * @return cached_cm_info An object on information that the courses
  *                        will know about (most noticeably, an icon).
+ *
+ * @see https://github.com/wooclap/moodle-mod_wooclap/issues/1#issuecomment-957577514
  */
-// See: https://github.com/moodle/moodle/blob/master/mod/lesson/lib.php#L1693
-// See: https://github.com/moodle/moodle/blob/master/mod/resource/lib.php#L207
-// See: https://docs.moodle.org/dev/Module_visibility_and_display for more info.
-function wooclap_get_coursemodule_info($cm) {
-    global $CFG;
+function wooclap_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+    $dbparams = ['id' => $coursemodule->instance];
+    $fields = 'id, name, intro, introformat';
+    if (!$wooclap = $DB->get_record('wooclap', $dbparams, $fields)) {
+        return false;
+    }
 
     $info = new cached_cm_info();
+    $info->name = $wooclap->name;
 
-    $fullurl = "$CFG->wwwroot/mod/wooclap/view.php?id=$cm->id&amp;redirect=1";
+    if ($coursemodule->showdescription) {
+        // Convert intro to html. Do not filter cached version, filters run at display time.
+        $info->content = format_module_intro('wooclap', $wooclap, $coursemodule->id, false);
+    }
+
+    $url = new moodle_url('/mod/wooclap/view.php', ['id' => $coursemodule->id, 'redirect' => 1]);
+    $fullurl = $url->out();
     $info->onclick = "window.open('$fullurl'); return false;";
 
     return $info;
@@ -570,4 +590,15 @@ function get_questions_quiz($quiz, $export = true) {
     }
 
     return $qresults;
+}
+
+/**
+ * Check if the callback url is safe and known
+ * @param string $callbackUrl
+ * @return bool
+ */
+function isValidCallbackUrl($callbackUrl)
+{
+    $baseurl = trim(get_config('wooclap', 'baseurl'), '/');
+    return $callbackUrl != null && strpos($callbackUrl, $baseurl) === 0;
 }

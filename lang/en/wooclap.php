@@ -51,8 +51,6 @@ $string['showconsentscreen'] = 'Show consent screen?';
 $string['showconsentscreen-description'] = 'If active, Wooclap will ask participants for their consent before collecting their email address.';
 
 $string['nowooclap'] = 'There are no Wooclap instances';
-$string['gradeupdateok'] = 'Grade update successful';
-$string['gradeupdatefailed'] = 'Grade update failed';
 $string['customcompletion'] = 'Completion state updated only by Wooclap';
 $string['customcompletiongroup'] = 'Wooclap custom completion';
 
@@ -76,9 +74,12 @@ $string['error-couldnotredirect'] = 'Could not redirect';
 $string['error-couldnotloadevents'] = 'Could not load user\'s Wooclap events';
 $string['error-couldnotupdatereport'] = 'Could not update report';
 $string['error-couldnotauth'] = 'Could not get user or course during authentication';
-$string['error-couldnotperformv3upgradestep1'] = 'Could not perform Step 1 of the V3 Upgrade';
+$string['error-couldnotperformv3upgradestep1'] = 'Could not perform Step 1 of the V3 Upgrade. Make sure that the accesskeyid, the baseurl and the secretaccesskey are configured in the plugin settings.';
 $string['error-couldnotperformv3upgradestep2'] = 'Could not perform Step 2 of the V3 Upgrade';
 $string['error-reportdeprecated'] = 'report_wooclap.php is deprecated. Use report_wooclap_v3.php instead.';
 $string['error-invalidtoken'] = 'Invalid token';
 $string['error-invalidjoinurl'] = 'Invalid join URL';
 $string['error-missingparameters'] = 'Missing parameters';
+$string['error-invalid-callback-url'] = 'The callback URL provided does not match the baseurl domain name defined in the settings.';
+
+$string['warn-missing-config-during-upgrade-to-v3'] = 'In order to run the migration, the accesskeyid, the baseurl and the secretaccesskey should be configured in the settings. Skipping the migration for now: you can run it later via the cli/v3_upgrade.php script. Note: if you want to use the plugin, this migration is required.';

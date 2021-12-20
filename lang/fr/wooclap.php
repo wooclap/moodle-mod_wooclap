@@ -49,8 +49,6 @@ $string['baseurl'] = 'URL du webservice';
 $string['baseurl-description'] = 'Sert uniquement au débogage ou au test. Ne modifiez cette valeur que si demandé par le support Wooclap.';
 
 $string['nowooclap'] = 'Il n\'y a pas d\'instance Wooclap';
-$string['gradeupdateok'] = 'Mise à jour de la note effectuée avec succès';
-$string['gradeupdatefailed'] = 'La mise à jour de la note a échoué';
 $string['customcompletion'] = 'Suivi d\'achèvement mis à jour uniquement par Wooclap';
 $string['customcompletiongroup'] = 'Conditions de suivi d\'achèvement Wooclap';
 
@@ -80,3 +78,4 @@ $string['error-invalidtoken'] = 'Le valeur du paramètre "token" est invalide';
 $string['error-invalidjoinurl'] = 'L\'URL pour rejoindre l\'événement est invalide';
 $string['error-missingparameters'] = 'Paramètres manquants';
 $string['error-reportdeprecated'] = 'report_wooclap.php n\'est plus supporté. Veuiller plutôt utiliser report_wooclap_v3.php.';
+$string['error-invalid-callback-url'] = 'L\'URL de retour (callback) ne correspondant au domaine défini dans la configuration.';

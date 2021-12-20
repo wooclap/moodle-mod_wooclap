@@ -108,6 +108,17 @@ class mod_wooclap_observer {
         . '/mod/wooclap/report_wooclap_v3.php?cm='
         . $event->objectid;
 
+        grade_update(
+            'mod/wooclap',
+            $event->courseid,
+            'mod',
+            'wooclap',
+            $wooclap->id,
+            0,
+            null,
+            ['itemname' => $wooclap->name]
+        );
+
         $displayName = $trainer->firstname . ' ' . $trainer->lastname;
         $firstName = $trainer->firstname;
         $lastName = $trainer->lastname;
