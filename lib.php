@@ -401,7 +401,33 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
 
     $grade = new stdClass();
     $grade->userid = $userid;
-    $grade->rawgrade = $gradeval;
+
+    // Depending on the maximum grade value, we should adapt the grade
+    // Wooclap grades are based on 100.
+
+    // 1 - trying to fetch the max grade from the course itself
+    $params = [
+        'courseid' => $wooclapinstance->course,
+        'itemtype' => 'mod',
+        'itemmodule' => 'wooclap',
+        'iteminstance' => $wooclapinstance->id,
+        'itemnumber' => 0
+    ];
+    if ($grade_item = grade_item::fetch($params)) {
+        $maxgrade = $grade_item->grademax;
+    }
+
+    // 2 - if nothing defined, trying from the global configuration
+    if (!$maxgrade) {
+        $maxgrade = (int)get_config('core', 'gradepointdefault');
+    }
+
+    // 3 - else hardcode to 100
+    if(!$maxgrade) {
+        $maxgrade = 100;
+    }
+
+    $grade->rawgrade = ($gradeval * $maxgrade) / 100;
 
     $status = grade_update(
         'mod/wooclap',
