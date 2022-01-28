@@ -257,7 +257,8 @@ class mod_wooclap_observer {
         ];
 
         wooclap_frame_view(
-            $response_data->viewUrl . '?' . wooclap_http_build_query($data_frame)
+            $response_data->viewUrl . '?' . wooclap_http_build_query($data_frame),
+            true
         );
     }
 }

@@ -478,10 +478,22 @@ function get_isotime() {
 }
 
 /**
- * @param string $src
+ * @param string $src The Wooclap link will be shown inside the iframe block
+ * @param bool $noHtmlBlock If true, it will show the content without the HTML
+ * block. Only the iframe. This value is usually defined as true by the
+ * observer.php:course_module_created method.
+ *
+ * We have noticed that in some Moodle instances (e.g our Bitnami staging
+ * environment), the teacher is not redirected to the activity URL when clicking
+ * on "Save and display". Instead, they stay on "/course/modedit.php" and the
+ * iframe is injected onto that page.
+ *
+ * To avoid having multiple <html /> element on the page, we have to add this
+ * parameter.
  */
-function wooclap_frame_view($src) {
-    echo '<iframe
+function wooclap_frame_view($src, $noHtmlBlock=false) {
+
+    $iframe = '<iframe
             id="contentframe"
             height="100%" width="100%"
             style="margin: 0; padding: 0; border: 0; position: fixed; top: 0; left: 0;"
@@ -489,6 +501,22 @@ function wooclap_frame_view($src) {
             webkitallowfullscreen mozallowfullscreen allowfullscreen
           >
           </iframe>';
+
+    if ($noHtmlBlock) {
+        echo $iframe;
+    } else {
+        echo '<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Wooclap</title>
+</head>
+<body>
+' . $iframe . '
+  </body>
+  </html>';
+    }
 }
 
 /**
