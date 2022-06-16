@@ -610,15 +610,18 @@ function wooclap_get_coursemodule_info($coursemodule) {
 }
 
 /**
- * Function to read all questions for quiz into big array
- *
- * @param int $quiz quiz id
+ * Get questions from database shema before the Moodle V4 version
+ * Warning: From V4 version, questions table structure has changed
+ * 
+ * @param $quiz_id Quiz Id
+ * 
+ * @return array List of questions from a quiz
  */
-function get_questions_quiz($quiz, $export = true) {
+function load_questions_before_v4($quiz_id){
     global $DB;
-
+    
     // Fetch the quiz slots.
-    $quiz_slots = $DB->get_records('quiz_slots', ['quizid' => $quiz]);
+    $quiz_slots = $DB->get_records('quiz_slots', ['quizid' => $quiz_id]);
     // Create an array with all the question ids.
     $question_ids = array_map(
         function ($elem) {
@@ -629,6 +632,72 @@ function get_questions_quiz($quiz, $export = true) {
     // Get the list of questions for the quiz.
     $questions = $DB->get_records_list('question', 'id', $question_ids);
 
+    return $questions;
+}
+
+/**
+ * Get questions from database shema after the Moodle V4 version
+ * Warning: From V4 version, questions table structure has changed
+ * 
+ * @param $quiz_id Quiz Id
+ * 
+ * @return array List of questions from a quiz
+ */
+function load_questions_for_v4($quiz_id){
+    global $DB;
+
+    $questions = $DB->get_records_sql(' 
+                        SELECT    
+                            q.*,
+                            qbe.questioncategoryid AS category
+                        FROM
+                            {quiz_slots} qs
+                                INNER JOIN {question_references} qr
+                                    ON  qs.id = qr.itemid
+                                    AND qr.component = :component
+                                    AND qr.questionarea = :questionarea
+                                INNER JOIN {question_bank_entries} qbe
+                                    ON qr.questionbankentryid = qbe.id
+                                INNER JOIN {question_versions} qv
+                                    ON qbe.id = qv.questionbankentryid
+                                    AND qv.version  = (
+                                                        SELECT MAX(version) 
+                                                        FROM {question_versions} 
+                                                        WHERE  questionbankentryid = qv.questionbankentryid
+                                                    )
+                                INNER JOIN {question} q
+                                    ON qv.questionid = q.id
+                        WHERE
+                            qs.quizid = :quizid',
+                        [
+                            'component' => 'mod_quiz', 
+                            'questionarea' => 'slot', 
+                            'quizid' => $quiz_id
+                        ]
+                    );
+    return $questions;
+}   
+
+/**
+ * Function to read all questions for quiz into big array
+ *
+ * @param int $quiz quiz id
+ */
+function get_questions_quiz($quiz, $export = true) {
+    
+    $branch = get_config('moodle', 'branch');
+    $questions = null;
+  
+    // Get the list of questions for the quiz.
+    // When Moodle version is < v4
+    if(strnatcmp($branch, '400') == -1) {
+        $questions = load_questions_before_v4($quiz);
+    }
+    // When Moodle version is >= v4
+    else {
+        $questions = load_questions_for_v4($quiz);
+    }
+    
     // Iterate through questions, getting stuff we need.
     $qresults = array();
 
