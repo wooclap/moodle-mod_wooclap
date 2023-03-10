@@ -34,8 +34,6 @@ global $CFG;
 require_once $CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php';
 require_once $CFG->dirroot . '/question/editlib.php';
 require_once $CFG->dirroot . '/question/export_form.php';
-require_once $CFG->dirroot . '/question/format.php';
-require_once $CFG->dirroot . '/question/format/xml/format.php';
 require_once $CFG->dirroot . '/mod/wooclap/format.php';
 
 /**
@@ -281,7 +279,9 @@ function wooclap_redirect_auth($userid) {
 
     $callback_url = wooclap_validate_callback_url($SESSION->wooclap_callback);
 
-    redirect($callback_url . '?' . wooclap_http_build_query($data));
+    $callback_url .= (parse_url($callback_url, PHP_URL_QUERY) ? '&' : '?') . wooclap_http_build_query($data);
+
+    redirect($callback_url);
 }
 
 /**

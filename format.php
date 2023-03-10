@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once $CFG->dirroot . '/question/format/xml/format.php';
+
 class qformat_wooclap extends qformat_xml {
     /**
      * Do the export

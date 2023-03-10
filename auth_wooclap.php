@@ -33,9 +33,14 @@ global $SESSION, $USER;
 $courseid = required_param('course', PARAM_INT);
 $cmid = required_param('cm', PARAM_INT);
 $callback = required_param('callback', PARAM_URL);
+$redirectTo = optional_param('redirectTo', null, PARAM_URL);
 
 if (!isValidCallbackUrl($callback)) {
     print_error('error-invalid-callback-url', 'wooclap');
+}
+
+if(!is_null($redirectTo)) {
+    $callback .= (parse_url($callback, PHP_URL_QUERY) ? '&' : '?') . 'redirectTo=' . urlencode($redirectTo);
 }
 
 if (isset($USER) && is_object($USER)) {
@@ -57,6 +62,7 @@ try {
             'cm' => $cmid,
             'callback' => $callback,
         ];
+
         // Cannot use new moodle_url because of http_build_query RFC constant.
         $SESSION->wooclap_wantsurl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?' . wooclap_http_build_query($data);
 
