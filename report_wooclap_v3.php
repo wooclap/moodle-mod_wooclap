@@ -67,7 +67,7 @@ if ($token === $tokencalc) {
     // Find user from username.
     $userdb = $DB->get_record('user', ['username' => $username], 'id', MUST_EXIST);
 
-    $gradestatus = wooclap_update_grade($wooclapinstance, $userdb->id, $score, $completionparam);
+    $gradestatus = wooclap_update_grades($wooclapinstance, $userdb->id, $score, $completionparam);
 
     // COMPLETION_COMPLETE: The user has completed this activity.
     // It is not specified whether they have passed or failed it.
