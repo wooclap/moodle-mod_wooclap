@@ -380,7 +380,7 @@ function wooclap_validate_callback_url($callbackurl) {
  * @return bool
  * @throws dml_exception
  */
-function wooclap_update_grade($wooclap, $userid, $gradeval, $completionstatus) {
+function wooclap_update_grades($wooclap, $userid, $gradeval, $completionstatus) {
     global $CFG, $DB;
     require_once($CFG->libdir . '/gradelib.php');
 
