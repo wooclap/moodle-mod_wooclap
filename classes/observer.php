@@ -186,6 +186,11 @@ class mod_wooclap_observer {
             $curl_data->wooclapeventid = $wooclap->wooclapeventid;
         }
 
+        if (isset($wooclap->linkedwooclapeventslug)) {
+            $data_token['linkedwooclapeventslug'] = $wooclap->linkedwooclapeventslug;
+            $curl_data->linkedwooclapeventslug = $wooclap->linkedwooclapeventslug;
+        }
+
         $curl_data->token = wooclap_generate_token(
             'CREATEv3?' . wooclap_http_build_query($data_token)
         );
@@ -256,9 +261,13 @@ class mod_wooclap_observer {
             'wooclapEventSlug' => $activity->linkedwooclapeventslug,
         ];
 
-        wooclap_frame_view(
-            $response_data->viewUrl . '?' . wooclap_http_build_query($data_frame),
-            true
-        );
+        // Do not display frame view when duplicating an activity. 
+        // Moodle does not expect HTML when duplicating via dropdown.
+        if (!isset($wooclap->linkedwooclapeventslug)) {
+            wooclap_frame_view(
+                $response_data->viewUrl . '?' . wooclap_http_build_query($data_frame),
+                true
+            );
+        }
     }
 }
