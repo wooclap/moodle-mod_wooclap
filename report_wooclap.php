@@ -26,8 +26,8 @@
 // No login check is expected here because this script is called from wooclap
 // ...and we authenticate request with a token
 // @codingStandardsIgnoreLine
-require_once __DIR__ . '/../../config.php';
+require_once(__DIR__ . '/../../config.php');
 
 // Deprecated in favor of report_wooclap_v3.php.
-print_error('error-reportdeprecated', 'wooclap');
+throw new \moodle_exception('error-reportdeprecated', 'wooclap');
 header("HTTP/1.0 400");

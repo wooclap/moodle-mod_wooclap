@@ -23,26 +23,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . '/../../config.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
 global $SESSION, $USER;
 
-$showConsentScreen = get_config('wooclap', 'showconsentscreen');
+$showconsentscreen = get_config('wooclap', 'showconsentscreen');
 
-$hasConsentedQuery = optional_param('hasConsented', null, PARAM_BOOL);
-$redirectUrl = optional_param('redirectUrl', null, PARAM_URL);
+$hasconsentedquery = optional_param('hasConsented', null, PARAM_BOOL);
+$redirecturl = optional_param('redirectUrl', null, PARAM_URL);
 
-if (isset($hasConsentedQuery)) {
-    $SESSION->hasConsented = $hasConsentedQuery;
+if (isset($hasconsentedquery)) {
+    $SESSION->hasConsented = $hasconsentedquery;
 }
 
 // Once $SESSION->hasConsented has been set, we can redirect the user back to
 // the right page.
 if (isset($SESSION->hasConsented)) {
-    // If there's a $redirectUrl, use that URL
-    if (!empty($redirectUrl)) {
-        redirect($redirectUrl);
+    // If there's a $redirectUrl, use that URL.
+    if (!empty($redirecturl)) {
+        redirect($redirecturl);
     }
 
     // Otherwise, use wooclap_redirect_auth which will redirect the
@@ -52,31 +52,11 @@ if (isset($SESSION->hasConsented)) {
 
 // We generate the URLs for the buttons which will allow us to set the session
 // variable for `$hasConsented` via the query string.
-$baseUrl = new moodle_url('/mod/wooclap/wooclap_consent_screen.php', [
-    'redirectUrl' => $redirectUrl,
+$baseurl = new moodle_url('/mod/wooclap/wooclap_consent_screen.php', [
+    'redirectUrl' => $redirecturl,
 ]);
-$noConsentUrl = new moodle_url($baseUrl, ['hasConsented' => 0]);
-$yesConsentUrl = new moodle_url($baseUrl, ['hasConsented' => 1]);
-?>
+$noconsenturl = new moodle_url($baseurl, ['hasConsented' => 0]);
+$yesconsenturl = new moodle_url($baseurl, ['hasConsented' => 1]);
 
-<!doctype html>
-<html class="consent-screen">
-
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="./css/consent-screen.css" rel="stylesheet" />
-</head>
-
-<body class="wrapper">
-  <div class="modal">
-    <img class="logo" src="./images/logo.jpg">
-    <p class="text"><?php echo get_string('consent-screen:description', 'wooclap'); ?></p>
-    <p class="text"><?php echo get_string('consent-screen:explanation', 'wooclap'); ?></p>
-    <div class="buttons-wrapper">
-      <a class="button plain" href="<?php echo $noConsentUrl ?>"><?php echo get_string('consent-screen:disagree', 'wooclap'); ?></a>
-      <a class="button" href="<?php echo $yesConsentUrl ?>"><?php echo get_string('consent-screen:agree', 'wooclap'); ?></a>
-    </div>
-  </div>
-</body>
-
-</html>
+$template = include('./wooclap_consent_screen.tpl.php');
+echo $template;

@@ -15,12 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Redirect the user to the appropriate submission related page
+ * Redirect the user to the appropriate submission related page.
+ * Any logged-in user can access this script, and they are considered as students by default.
  *
  * @package   mod_wooclap
  */
 
-require_once __DIR__ . "/../../config.php";
+require_once(__DIR__ . "/../../config.php");
 
 $id = required_param('id', PARAM_INT); // Course module ID.
 
@@ -33,14 +34,14 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 
 require_login($course, false, $cm);
 
-$course_context = context_course::instance($cm->course);
-$role = wooclap_get_role($course_context);
+$coursecontext = context_course::instance($cm->course);
+$role = wooclap_get_role($coursecontext);
 
-// For now, redirect both student and teacher to the same page
+// For now, redirect both student and teacher to the same page.
 
 if ($role == 'student') {
     redirect('view.php?id=' . $id);
 } else {
-    // $role == 'teacher'
+    // Example: $role == 'teacher'.
     redirect('view.php?id=' . $id);
 }

@@ -15,12 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This script lists the Wooclap activities in a course.
+ * Any user can access this script.
+ *
  * @package mod_wooclap
  * @copyright  2018 CBlue sprl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once __DIR__ . '/../../config.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
 $id = required_param('id', PARAM_INT); // Course id.
 

@@ -31,10 +31,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 global $CFG;
-require_once $CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php';
-require_once $CFG->dirroot . '/question/editlib.php';
-require_once $CFG->dirroot . '/question/export_form.php';
-require_once $CFG->dirroot . '/mod/wooclap/format.php';
+require_once($CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php');
+require_once($CFG->dirroot . '/question/editlib.php');
+require_once($CFG->dirroot . '/question/export_form.php');
+require_once($CFG->dirroot . '/mod/wooclap/format.php');
 
 /**
  * @param $feature
@@ -210,7 +210,7 @@ function wooclap_check_activity_user_access($courseid, $cmid, $userid) {
         $modinfo = get_fast_modinfo($courseid, $userid);
         $cm = $modinfo->get_cm($cmid);
     } catch (Exception $e) {
-        throw new moodle_exception($e->getMessage());
+        throw new \moodle_exception($e->getMessage());
     }
     if (isset($cm) && $cm->uservisible == true) {
         return true;
@@ -228,32 +228,32 @@ function wooclap_redirect_auth($userid) {
 
     wooclap_ask_consent_if_not_given();
 
-    if (!isValidCallbackUrl($SESSION->wooclap_callback)) {
-        print_error('error-invalid-callback-url', 'wooclap');
+    if (!wooclap_is_valid_callback_url($SESSION->wooclap_callback)) {
+        throw new \moodle_exception('error-invalid-callback-url', 'wooclap');
     }
 
     if (!isset($SESSION->wooclap_courseid) || !isset($SESSION->wooclap_cmid) || !isset($SESSION->wooclap_callback)) {
-        print_error('error-missingparameters', 'wooclap');
+        throw new \moodle_exception('error-missingparameters', 'wooclap');
         header("HTTP/1.0 401");
     }
 
     try {
         $cm = get_coursemodule_from_id('wooclap', $SESSION->wooclap_cmid);
-        $course_context = context_course::instance($cm->course);
+        $coursecontext = context_course::instance($cm->course);
         $userdb = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
         $activity = $DB->get_record('wooclap', ['id' => $cm->instance], '*', MUST_EXIST);
         $accesskeyid = get_config('wooclap', 'accesskeyid');
     } catch (Exception $e) {
-        print_error('error-couldnotauth', 'wooclap');
+        throw new \moodle_exception('error-couldnotauth', 'wooclap');
     }
 
-    $role = wooclap_get_role($course_context);
-    $ts = get_isotime();
-    $hasAccess = wooclap_check_activity_user_access($SESSION->wooclap_courseid, $SESSION->wooclap_cmid, $userid);
+    $role = wooclap_get_role($coursecontext);
+    $ts = wooclap_get_isotime();
+    $hasaccess = wooclap_check_activity_user_access($SESSION->wooclap_courseid, $SESSION->wooclap_cmid, $userid);
 
-    $data_token = [
+    $datatoken = [
         'accessKeyId' => $accesskeyid,
-        'hasAccess' => $hasAccess,
+        'hasAccess' => $hasaccess,
         'moodleUsername' => $userdb->username,
         'role' => $role,
         'ts' => $ts,
@@ -266,35 +266,35 @@ function wooclap_redirect_auth($userid) {
         'displayName' => $userdb->firstname . ' ' . $userdb->lastname,
         'firstName' => $userdb->firstname,
         'lastName' => $userdb->lastname,
-        // Only add the email if the user has consented
+        // Only add the email if the user has consented.
         'email' => $SESSION->hasConsented ? $userdb->email : '',
         'role' => $role,
-        'hasAccess' => $hasAccess,
+        'hasAccess' => $hasaccess,
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
-        'token' => wooclap_generate_token('AUTHv3?' . wooclap_http_build_query($data_token)),
+        'token' => wooclap_generate_token('AUTHv3?' . wooclap_http_build_query($datatoken)),
         'version' => get_config('mod_wooclap')->version,
         'wooclapEventSlug' => $activity->linkedwooclapeventslug,
     ];
 
-    $callback_url = wooclap_validate_callback_url($SESSION->wooclap_callback);
+    $callbackurl = wooclap_validate_callback_url($SESSION->wooclap_callback);
 
-    $callback_url .= (parse_url($callback_url, PHP_URL_QUERY) ? '&' : '?') . wooclap_http_build_query($data);
+    $callbackurl .= (parse_url($callbackurl, PHP_URL_QUERY) ? '&' : '?') . wooclap_http_build_query($data);
 
-    redirect($callback_url);
+    redirect($callbackurl);
 }
 
 /**
  * @throws moodle_exception
  */
-function wooclap_ask_consent_if_not_given($redirectUrl = null, $role = null) {
+function wooclap_ask_consent_if_not_given($redirecturl = null, $role = null) {
     global $CFG, $DB, $SESSION;
 
-    $showConsentScreen = get_config('wooclap', 'showconsentscreen');
+    $showconsentscreen = get_config('wooclap', 'showconsentscreen');
 
     // Consider that consent has been obtained otherwise if the consent screen
     // is not shown or if it's a teacher.
-    if (!$showConsentScreen || $role == 'teacher') {
+    if (!$showconsentscreen || $role == 'teacher') {
         $SESSION->hasConsented = true;
     }
 
@@ -303,7 +303,7 @@ function wooclap_ask_consent_if_not_given($redirectUrl = null, $role = null) {
         redirect(
             new moodle_url(
                 '/mod/wooclap/wooclap_consent_screen.php',
-                ['redirectUrl' => $redirectUrl]
+                ['redirectUrl' => $redirecturl]
             )
         );
     }
@@ -314,10 +314,10 @@ function wooclap_ask_consent_if_not_given($redirectUrl = null, $role = null) {
  * @throws moodle_exception
  * @return bool true if the current settings are accepted by Wooclap
  */
-function get_ping_status() {
+function wooclap_get_ping_status() {
     // Generate a token based on necessary parameters.
 
-    $ts = get_isotime();
+    $ts = wooclap_get_isotime();
 
     try {
         $accesskeyid = get_config('wooclap', 'accesskeyid');
@@ -326,7 +326,7 @@ function get_ping_status() {
         return false;
     }
 
-    $data_token = [
+    $datatoken = [
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
         'version' => get_config('mod_wooclap')->version,
@@ -334,11 +334,11 @@ function get_ping_status() {
     $data = [
         'accessKeyId' => $accesskeyid,
         'ts' => $ts,
-        'token' => wooclap_generate_token('PING?' . wooclap_http_build_query($data_token)),
+        'token' => wooclap_generate_token('PING?' . wooclap_http_build_query($datatoken)),
         'version' => get_config('mod_wooclap')->version,
     ];
 
-    $ping_url = wooclap_get_ping_url();
+    $pingurl = wooclap_get_ping_url();
 
     // Use curl to make a call and check the result.
 
@@ -348,7 +348,7 @@ function get_ping_status() {
     $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
     $curl->setHeader($headers);
     $response = $curl->get(
-        $ping_url . '?' . wooclap_http_build_query($data)
+        $pingurl . '?' . wooclap_http_build_query($data)
     );
     $curlinfo = $curl->info;
 
@@ -356,16 +356,16 @@ function get_ping_status() {
         return false;
     }
 
-    $response_data = json_decode($response);
-    return $response_data->keysAreValid;
+    $responsedata = json_decode($response);
+    return $responsedata->keysAreValid;
 }
 
 /**
  * @param $course_context
  * @return string
  */
-function wooclap_get_role($course_context) {
-    if ($course_context and has_capability('moodle/course:update', $course_context)) {
+function wooclap_get_role($coursecontext) {
+    if ($coursecontext && has_capability('moodle/course:update', $coursecontext)) {
         $role = 'teacher';
     } else {
         $role = 'student';
@@ -377,14 +377,14 @@ function wooclap_get_role($course_context) {
  * @param string $callback_url
  * @return string
  */
-function wooclap_validate_callback_url($callback_url) {
-    if (strpos($callback_url, 'https://') === false) {
-        $callback_url = 'https://' . $callback_url;
+function wooclap_validate_callback_url($callbackurl) {
+    if (strpos($callbackurl, 'https://') === false) {
+        $callbackurl = 'https://' . $callbackurl;
     }
-    if (!filter_var($callback_url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
-        print_error('error-callback-is-not-url', 'wooclap');
+    if (!filter_var($callbackurl, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+        throw new \moodle_exception('error-callback-is-not-url', 'wooclap');
     }
-    return $callback_url;
+    return $callbackurl;
 }
 
 /**
@@ -397,7 +397,7 @@ function wooclap_validate_callback_url($callback_url) {
  */
 function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completionstatus) {
     global $CFG, $DB;
-    require_once $CFG->libdir . '/gradelib.php';
+    require_once($CFG->libdir . '/gradelib.php');
 
     $grade = new stdClass();
     $grade->userid = $userid;
@@ -413,8 +413,8 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
         'iteminstance' => $wooclapinstance->id,
         'itemnumber' => 0
     ];
-    if ($grade_item = grade_item::fetch($params)) {
-        $maxgrade = $grade_item->grademax;
+    if ($gradeitem = grade_item::fetch($params)) {
+        $maxgrade = $gradeitem->grademax;
     }
 
     // 2 - if nothing defined, trying from the global configuration
@@ -423,7 +423,7 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
     }
 
     // 3 - else hardcode to 100
-    if(!$maxgrade) {
+    if (!$maxgrade) {
         $maxgrade = 100;
     }
 
@@ -472,7 +472,7 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
 /**
  * @return string
  */
-function get_isotime() {
+function wooclap_get_isotime() {
     $date = new \DateTime("now", new \DateTimeZone("UTC"));
     return $date->format('Y-m-d\TH:i:s\Z');
 }
@@ -491,7 +491,7 @@ function get_isotime() {
  * To avoid having multiple <html /> element on the page, we have to add this
  * parameter.
  */
-function wooclap_frame_view($src, $noHtmlBlock=false) {
+function wooclap_frame_view($src, $nohtmlblock=false) {
 
     $iframe = '<iframe
             id="contentframe"
@@ -502,7 +502,7 @@ function wooclap_frame_view($src, $noHtmlBlock=false) {
           >
           </iframe>';
 
-    if ($noHtmlBlock) {
+    if ($nohtmlblock) {
         echo $iframe;
     } else {
         echo '<html lang="en">
@@ -558,7 +558,7 @@ function wooclap_grade_item_update($wooclapinstance, $grades = null) {
     global $CFG;
     if (!function_exists('grade_update')) {
         // We use a workaround for buggy PHP versions.
-        require_once $CFG->libdir . '/gradelib.php';
+        require_once($CFG->libdir . '/gradelib.php');
     }
     return grade_update(
         'mod/wooclap',
@@ -612,25 +612,25 @@ function wooclap_get_coursemodule_info($coursemodule) {
 /**
  * Get questions from database shema before the Moodle V4 version
  * Warning: From V4 version, questions table structure has changed
- * 
+ *
  * @param $quiz_id Quiz Id
- * 
+ *
  * @return array List of questions from a quiz
  */
-function load_questions_before_v4($quiz_id){
+function wooclap_load_questions_before_v4($quizid) {
     global $DB;
-    
+
     // Fetch the quiz slots.
-    $quiz_slots = $DB->get_records('quiz_slots', ['quizid' => $quiz_id]);
+    $quizslots = $DB->get_records('quiz_slots', ['quizid' => $quizid]);
     // Create an array with all the question ids.
-    $question_ids = array_map(
+    $questionids = array_map(
         function ($elem) {
             return $elem->questionid;
         },
-        $quiz_slots
+        $quizslots
     );
     // Get the list of questions for the quiz.
-    $questions = $DB->get_records_list('question', 'id', $question_ids);
+    $questions = $DB->get_records_list('question', 'id', $questionids);
 
     return $questions;
 }
@@ -638,16 +638,16 @@ function load_questions_before_v4($quiz_id){
 /**
  * Get questions from database shema after the Moodle V4 version
  * Warning: From V4 version, questions table structure has changed
- * 
+ *
  * @param $quiz_id Quiz Id
- * 
+ *
  * @return array List of questions from a quiz
  */
-function load_questions_for_v4($quiz_id){
+function wooclap_load_questions_for_v4($quizid) {
     global $DB;
 
-    $questions = $DB->get_records_sql(' 
-                        SELECT    
+    $questions = $DB->get_records_sql('
+                        SELECT
                             q.*,
                             qbe.questioncategoryid AS category
                         FROM
@@ -661,8 +661,8 @@ function load_questions_for_v4($quiz_id){
                                 INNER JOIN {question_versions} qv
                                     ON qbe.id = qv.questionbankentryid
                                     AND qv.version  = (
-                                                        SELECT MAX(version) 
-                                                        FROM {question_versions} 
+                                                        SELECT MAX(version)
+                                                        FROM {question_versions}
                                                         WHERE  questionbankentryid = qv.questionbankentryid
                                                     )
                                 INNER JOIN {question} q
@@ -670,34 +670,33 @@ function load_questions_for_v4($quiz_id){
                         WHERE
                             qs.quizid = :quizid',
                         [
-                            'component' => 'mod_quiz', 
-                            'questionarea' => 'slot', 
-                            'quizid' => $quiz_id
+                            'component' => 'mod_quiz',
+                            'questionarea' => 'slot',
+                            'quizid' => $quizid
                         ]
                     );
     return $questions;
-}   
+}
 
 /**
  * Function to read all questions for quiz into big array
  *
  * @param int $quiz quiz id
  */
-function get_questions_quiz($quiz, $export = true) {
-    
+function wooclap_get_questions_quiz($quiz, $export = true) {
+
     $branch = get_config('moodle', 'branch');
     $questions = null;
-  
+
     // Get the list of questions for the quiz.
-    // When Moodle version is < v4
-    if(strnatcmp($branch, '400') == -1) {
-        $questions = load_questions_before_v4($quiz);
+    if (strnatcmp($branch, '400') == -1) {
+        // When Moodle version is < v4.
+        $questions = wooclap_load_questions_before_v4($quiz);
+    } else {
+        // When Moodle version is >= v4.
+        $questions = wooclap_load_questions_for_v4($quiz);
     }
-    // When Moodle version is >= v4
-    else {
-        $questions = load_questions_for_v4($quiz);
-    }
-    
+
     // Iterate through questions, getting stuff we need.
     $qresults = array();
 
@@ -720,8 +719,7 @@ function get_questions_quiz($quiz, $export = true) {
  * @param string $callbackUrl
  * @return bool
  */
-function isValidCallbackUrl($callbackUrl)
-{
+function wooclap_is_valid_callback_url($callbackurl) {
     $baseurl = trim(get_config('wooclap', 'baseurl'), '/');
-    return $callbackUrl != null && strpos($callbackUrl, $baseurl) === 0;
+    return $callbackurl != null && strpos($callbackurl, $baseurl) === 0;
 }

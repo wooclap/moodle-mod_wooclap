@@ -18,13 +18,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once __DIR__ .  '/../locallib.php';
+require_once(__DIR__ .  '/../locallib.php');
 
-function xmldb_wooclap_upgrade($oldversion)
-{
+function xmldb_wooclap_upgrade($oldversion) {
     global $CFG, $DB, $OUTPUT;
 
-    require_once $CFG->libdir . '/db/upgradelib.php';
+    require_once($CFG->libdir . '/db/upgradelib.php');
 
     $dbman = $DB->get_manager();
 
@@ -40,7 +39,7 @@ function xmldb_wooclap_upgrade($oldversion)
         upgrade_mod_savepoint(true, 2018080207, 'wooclap');
     }
     if ($oldversion < 2019041300) {
-        // https://docs.moodle.org/dev/XMLDB_creating_new_DDL_functions
+        // More info: https://docs.moodle.org/dev/XMLDB_creating_new_DDL_functions.
         $table = new xmldb_table('wooclap');
         $field = new xmldb_field('wooclapeventid', XMLDB_TYPE_TEXT, 'medium', null, null, null, null, null, null);
 
@@ -65,15 +64,15 @@ function xmldb_wooclap_upgrade($oldversion)
         $allwooclaprecords = $DB->get_records('wooclap');
         foreach ($allwooclaprecords as $activity) {
             if (!$activity->linkedwooclapeventslug) {
-                $regexMatches = '';
+                $regexmatches = '';
                 $slugregex = '/^(.*)api\/moodle(\/v\d+)?\/events\/(.*)$/i';
-                if (preg_match($slugregex, $activity->editurl, $regexMatches)) {
-                    $baseurl = $regexMatches[1];
-                    $isv2orhigher = $regexMatches[2];
-                    $eventSlug = $regexMatches[3];
+                if (preg_match($slugregex, $activity->editurl, $regexmatches)) {
+                    $baseurl = $regexmatches[1];
+                    $isv2orhigher = $regexmatches[2];
+                    $eventslug = $regexmatches[3];
                     if ($isv2orhigher === '') {
-                        $activity->editurl = $baseurl . 'api/moodle/v2/events/' . $eventSlug;
-                        $activity->linkedwooclapeventslug = $eventSlug;
+                        $activity->editurl = $baseurl . 'api/moodle/v2/events/' . $eventslug;
+                        $activity->linkedwooclapeventslug = $eventslug;
                         $DB->update_record('wooclap', $activity);
                     }
                 }
@@ -85,8 +84,8 @@ function xmldb_wooclap_upgrade($oldversion)
 
     if ($oldversion < 2021050100) {
         // PART 1 of the V3 upgrade.
-        // Perform the two V3_UPGRADE_STEPs with Wooclap
-        // so that Wooclap can use the username as identifier instead of the ids.
+        // Perform the two V3_UPGRADE_STEPs with Wooclap.
+        // So that Wooclap can use the username as identifier instead of the ids.
         // - V3_UPGRADE_STEP_1 will return the list of moodle user ids that have a wooclap account.
         // - V3_UPGRADE_STEP_2 will send a mapping from those ids to the moodle usernames to Wooclap.
 
@@ -104,20 +103,20 @@ function xmldb_wooclap_upgrade($oldversion)
             echo $OUTPUT->notification(get_string('warn-missing-config-during-upgrade-to-v3', 'wooclap'), 'notifyproblem');
         }
         // PART 2 of the V3 upgrade.
-        // Upgrade existing wooclap activity records
-        // editUrl of existing activities must be updated /v2/ -> /v3/.
+        // Upgrade existing wooclap activity records.
+        // The editUrl of existing activities must be updated /v2/ -> /v3/.
         $allwooclaprecords = $DB->get_records('wooclap');
 
         foreach ($allwooclaprecords as $activity) {
             $slugregex = '/^(.*)api\/moodle(\/v\d+)?\/events\/(.*)$/i';
 
-            if (preg_match($slugregex, $activity->editurl, $regexMatches)) {
-                $baseurl = $regexMatches[1];
-                $apiVersion = $regexMatches[2];
-                $eventSlug = $regexMatches[3];
+            if (preg_match($slugregex, $activity->editurl, $regexmatches)) {
+                $baseurl = $regexmatches[1];
+                $apiversion = $regexmatches[2];
+                $eventslug = $regexmatches[3];
 
-                if ($apiVersion == '' || $apiVersion == '/v2') {
-                    $activity->editurl = $baseurl . 'api/moodle/v3/events/' . $eventSlug;
+                if ($apiversion == '' || $apiversion == '/v2') {
+                    $activity->editurl = $baseurl . 'api/moodle/v3/events/' . $eventslug;
                     $DB->update_record('wooclap', $activity);
                 }
             }

@@ -21,11 +21,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . '/../../config.php';
-require_once $CFG->libdir . '/completionlib.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->libdir . '/completionlib.php');
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
-$id = optional_param('id', 0, PARAM_INT); // Course Module ID, or
+$id = optional_param('id', 0, PARAM_INT); // Course Module ID, or.
 $wid = optional_param('w', 0, PARAM_INT); // Wooclap ID.
 
 if (isset($wid) && $wid > 0) {
@@ -65,7 +65,7 @@ if (is_object($cm) && is_object($wooclap)) {
 
     // View Wooclap edit form in a frame.
     if (isset($USER)) {
-        $ts = get_isotime();
+        $ts = wooclap_get_isotime();
         try {
             $accesskeyid = get_config('wooclap', 'accesskeyid');
         } catch (Exception $e) {
@@ -73,11 +73,11 @@ if (is_object($cm) && is_object($wooclap)) {
         }
 
         $role = wooclap_get_role(context_course::instance($cm->course));
-        $canEdit = $role == 'teacher';
+        $canedit = $role == 'teacher';
 
         wooclap_ask_consent_if_not_given($PAGE->url, $role);
 
-        $auth_url = $CFG->wwwroot
+        $authurl = $CFG->wwwroot
         . '/mod/wooclap/auth_wooclap.php?id='
         . $wooclap->id
         . '&course='
@@ -85,32 +85,32 @@ if (is_object($cm) && is_object($wooclap)) {
         . '&cm='
         . $cm->id;
 
-        $report_url = $CFG->wwwroot
+        $reporturl = $CFG->wwwroot
         . '/mod/wooclap/report_wooclap_v3.php?cm='
         . $cm->id;
 
-        $course_url = $CFG->wwwroot
+        $courseurl = $CFG->wwwroot
         . '/course/view.php?id='
         . $cm->course;
 
-        $data_token = [
+        $datatoken = [
             'accessKeyId' => $accesskeyid,
-            'authUrl' => $auth_url,
-            'canEdit' => $canEdit,
-            'courseUrl' => $course_url,
+            'authUrl' => $authurl,
+            'canEdit' => $canedit,
+            'courseUrl' => $courseurl,
             'moodleUsername' => $USER->username,
-            'reportUrl' => $report_url,
+            'reportUrl' => $reporturl,
             'ts' => $ts,
             'version' => get_config('mod_wooclap')->version,
             'wooclapEventSlug' => $wooclap->linkedwooclapeventslug,
         ];
-        $token = wooclap_generate_token('JOINv3?' . wooclap_http_build_query($data_token));
+        $token = wooclap_generate_token('JOINv3?' . wooclap_http_build_query($datatoken));
 
-        $data_frame = [
+        $dataframe = [
             'accessKeyId' => $accesskeyid,
-            'authUrl' => $auth_url,
-            'canEdit' => $canEdit,
-            'courseUrl' => $course_url,
+            'authUrl' => $authurl,
+            'canEdit' => $canedit,
+            'courseUrl' => $courseurl,
             'displayName' => $USER->firstname . ' ' . $USER->lastname,
             // Only add the email if the user has consented.
             'email' => $SESSION->hasConsented ? $USER->email : '',
@@ -118,7 +118,7 @@ if (is_object($cm) && is_object($wooclap)) {
             'hasAccess' => wooclap_check_activity_user_access($cm->course, $cm->id, $USER->id),
             'lastName' => $USER->lastname,
             'moodleUsername' => $USER->username,
-            'reportUrl' => $report_url,
+            'reportUrl' => $reporturl,
             'role' => $role,
             'token' => $token,
             'ts' => $ts,
@@ -126,8 +126,8 @@ if (is_object($cm) && is_object($wooclap)) {
             'wooclapEventSlug' => $wooclap->linkedwooclapeventslug,
         ];
 
-        wooclap_frame_view($wooclap->editurl . '?' . wooclap_http_build_query($data_frame));
+        wooclap_frame_view($wooclap->editurl . '?' . wooclap_http_build_query($dataframe));
     }
 } else {
-    print_error('error-noeventid', 'wooclap');
+    throw new \moodle_exception('error-noeventid', 'wooclap');
 }

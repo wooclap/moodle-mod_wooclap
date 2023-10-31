@@ -20,7 +20,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once __DIR__ . '/../../../../config.php';
+require_once(__DIR__ . '/../../../../config.php');
 
 /**
  * Define all the backup steps that will be used by the backup_wooclap_activity_task

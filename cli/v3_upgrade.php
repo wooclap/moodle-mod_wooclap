@@ -25,9 +25,9 @@
 
 define('CLI_SCRIPT', true);
 
-require __DIR__ . '/../../../config.php';
-require_once $CFG->libdir . '/clilib.php';
-require_once $CFG->dirroot . '/mod/wooclap/locallib.php';
+require(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir . '/clilib.php');
+require_once($CFG->dirroot . '/mod/wooclap/locallib.php');
 
 $usage = "Manually perform the v3 API upgrade for the Moodle plugin if not performed automatically during the plugin upgrade.
 This upgrade is necessary to be able to use plugin versions >=2021062500.
@@ -58,20 +58,20 @@ if ($unrecognised) {
     cli_error(get_string('cliunknowoption', 'core_admin', $unrecognised));
 }
 
-// Print help message
+// Print help message.
 if ($options['help']) {
     cli_writeln($usage);
     exit(2);
 }
 
-// Handle `verbose` parameter
+// Handle `verbose` parameter.
 if (empty($options['verbose'])) {
     $trace = new null_progress_trace();
 } else {
     $trace = new text_progress_trace();
 }
 
-// Perform the actual upgrade
+// Perform the actual upgrade.
 $result = mod_wooclap_v3_upgrade();
 
 cli_writeln('Migration executed successfully.');

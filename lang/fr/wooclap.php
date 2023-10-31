@@ -36,7 +36,7 @@ $string['modulenamepluralformatted'] = 'Liste des activités Wooclap';
 $string['quiz'] = 'Importer un quiz Moodle';
 $string['wooclapeventid'] = 'Dupliquer un événement Wooclap';
 
-// Settings
+// Settings.
 $string['wooclapsettings'] = 'Paramètres';
 $string['testconnection'] = 'Tester la Connexion';
 $string['pingOK'] = 'Connexion établie avec Wooclap';
@@ -52,7 +52,7 @@ $string['nowooclap'] = 'Il n\'y a pas d\'instance Wooclap';
 $string['customcompletion'] = 'Suivi d\'achèvement mis à jour uniquement par Wooclap';
 $string['customcompletiongroup'] = 'Conditions de suivi d\'achèvement Wooclap';
 
-// Consent screen
+// Consent screen.
 $string['showconsentscreen'] = 'Afficher l\'écran de consentement ?';
 $string['showconsentscreen-description'] = 'Si cette option est active, Wooclap demandera aux participants leur consentement avant de récupérer leur adresse email.';
 $string['consent-screen:description'] = '<b>Wooclap</b> rend les étudiants acteurs de leur apprentissage.';
@@ -60,7 +60,7 @@ $string['consent-screen:explanation'] = 'Pour le bon fonctionnement de certaines
 $string['consent-screen:agree'] = 'J\'accepte';
 $string['consent-screen:disagree'] = 'Je refuse';
 
-// capabilities
+// Capabilities.
 $string['wooclap:view'] = 'Accéder à une activité Wooclap';
 $string['wooclap:addinstance'] = 'Ajouter une activité Wooclap à un cours';
 

@@ -18,8 +18,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once $CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once($CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php');
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
 /**
  * Perform v3 upgrade with wooclap server
@@ -27,8 +27,7 @@ require_once $CFG->dirroot . '/mod/wooclap/lib.php';
  * @throws moodle_exception
  * TODO check, if possible, if V3 upgrade already performed on remote Wooclap
  */
-function mod_wooclap_v3_upgrade()
-{
+function mod_wooclap_v3_upgrade() {
     global $DB;
 
     $curl = new wooclap_curl();
@@ -37,7 +36,7 @@ function mod_wooclap_v3_upgrade()
     $headers[1] = sprintf("X-Wooclap-PluginVersion: %s", get_config('mod_wooclap')->version);
     $curl->setHeader($headers);
 
-    $ts = get_isotime();
+    $ts = wooclap_get_isotime();
 
     try {
         $accesskeyid = get_config('wooclap', 'accesskeyid');
@@ -57,22 +56,22 @@ function mod_wooclap_v3_upgrade()
         'version' => $version,
     ];
 
-    $curl_data_step1 = new StdClass;
-    $curl_data_step1->accessKeyId = $accesskeyid;
-    $curl_data_step1->ts = $ts;
-    $curl_data_step1->token = wooclap_generate_token(
+    $curldatastep1 = new StdClass;
+    $curldatastep1->accessKeyId = $accesskeyid;
+    $curldatastep1->ts = $ts;
+    $curldatastep1->token = wooclap_generate_token(
         'V3_UPGRADE_STEP_1?' . wooclap_http_build_query($step1datatoken)
     );
-    $curl_data_step1->version = $version;
+    $curldatastep1->version = $version;
 
     $response = $curl->get(
-        $v3upgradestep1url . '?' . wooclap_http_build_query($curl_data_step1)
+        $v3upgradestep1url . '?' . wooclap_http_build_query($curldatastep1)
     );
     $curlinfo = $curl->info;
 
     if ($response && is_array($curlinfo) && $curlinfo['http_code'] == 200) {
         // STEP 2.
-        $idsToUsernamesMapping = [];
+        $idstousernamesmapping = [];
 
         foreach (json_decode($response) as $moodleuserid) {
             $user = $DB->get_record(
@@ -80,10 +79,10 @@ function mod_wooclap_v3_upgrade()
                 ['id' => $moodleuserid]
             );
 
-            $idsToUsernamesMapping[$moodleuserid] = $user->username;
+            $idstousernamesmapping[$moodleuserid] = $user->username;
         }
 
-        $jsonmapping = json_encode($idsToUsernamesMapping);
+        $jsonmapping = json_encode($idstousernamesmapping);
 
         $v3upgradestep2url = sprintf("%s/api/moodle/v3/upgrade-step-2", $baseurl);
         $step2datatoken = [
@@ -93,24 +92,24 @@ function mod_wooclap_v3_upgrade()
             'version' => $version,
         ];
 
-        $curl_data_step2 = new StdClass;
-        $curl_data_step2->accessKeyId = $accesskeyid;
-        $curl_data_step2->idsToUsernamesMapping = $jsonmapping;
-        $curl_data_step2->ts = $ts;
-        $curl_data_step2->token = wooclap_generate_token(
+        $curldatastep2 = new StdClass;
+        $curldatastep2->accessKeyId = $accesskeyid;
+        $curldatastep2->idsToUsernamesMapping = $jsonmapping;
+        $curldatastep2->ts = $ts;
+        $curldatastep2->token = wooclap_generate_token(
             'V3_UPGRADE_STEP_2?' . wooclap_http_build_query($step2datatoken)
         );
-        $curl_data_step2->version = $version;
+        $curldatastep2->version = $version;
 
         $response = $curl->post(
-            $v3upgradestep2url, json_encode($curl_data_step2)
+            $v3upgradestep2url, json_encode($curldatastep2)
         );
         $curlinfo = $curl->info;
 
         if (!$response || !is_array($curlinfo) || $curlinfo['http_code'] != 200) {
-            print_error('error-couldnotperformv3upgradestep2', 'wooclap');
+            throw new \moodle_exception('error-couldnotperformv3upgradestep2', 'wooclap');
         }
     } else {
-        print_error('error-couldnotperformv3upgradestep1', 'wooclap');
+        throw new \moodle_exception('error-couldnotperformv3upgradestep1', 'wooclap');
     }
 }

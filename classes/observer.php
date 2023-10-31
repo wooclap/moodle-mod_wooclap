@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
-require_once $CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php';
-require_once $CFG->dirroot . '/lib/datalib.php';
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
+require_once($CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php');
+require_once($CFG->dirroot . '/lib/datalib.php');
 
 /**
  * Event observer for mod_wooclap.
@@ -51,7 +51,7 @@ class mod_wooclap_observer {
             try {
                 wooclap_redirect_auth($event->userid);
             } catch (Exception $e) {
-                throw new moodle_exception($e->getMessage());
+                throw new \moodle_exception($e->getMessage());
             }
         } else {
             if (isset($SESSION->wooclap_wantsurl)) {
@@ -87,16 +87,16 @@ class mod_wooclap_observer {
 
         // Convert the quiz to the MoodleXML format.
         if (isset($wooclap->quiz) && $wooclap->quiz > 0) {
-            $questions = get_questions_quiz($wooclap->quiz);
+            $questions = wooclap_get_questions_quiz($wooclap->quiz);
             $qformat = new qformat_wooclap();
             $qformat->setQuestions($questions);
-            $quiz_file = $qformat->exportprocess();
+            $quizfile = $qformat->exportprocess();
         }
 
         // Prepare data for call to the Wooclap CREATEv3 webservice.
         $trainer = $DB->get_record('user', ['id' => $USER->id]);
 
-        $auth_url = $CFG->wwwroot
+        $authurl = $CFG->wwwroot
         . '/mod/wooclap/auth_wooclap.php?id='
         . $event->other['instanceid']
         . '&course='
@@ -104,7 +104,7 @@ class mod_wooclap_observer {
         . '&cm='
         . $event->objectid;
 
-        $report_url = $CFG->wwwroot
+        $reporturl = $CFG->wwwroot
         . '/mod/wooclap/report_wooclap_v3.php?cm='
         . $event->objectid;
 
@@ -119,11 +119,11 @@ class mod_wooclap_observer {
             ['itemname' => $wooclap->name]
         );
 
-        $displayName = $trainer->firstname . ' ' . $trainer->lastname;
-        $firstName = $trainer->firstname;
-        $lastName = $trainer->lastname;
+        $displayname = $trainer->firstname . ' ' . $trainer->lastname;
+        $firstname = $trainer->firstname;
+        $lastname = $trainer->lastname;
 
-        $ts = get_isotime();
+        $ts = wooclap_get_isotime();
         try {
             $accesskeyid = get_config('wooclap', 'accesskeyid');
         } catch (Exception $exc) {
@@ -145,56 +145,56 @@ class mod_wooclap_observer {
             return;
         }
 
-        $course_url = $CFG->wwwroot
+        $courseurl = $CFG->wwwroot
         . '/course/view.php?id='
         . $event->courseid;
 
-        $data_token = [
+        $datatoken = [
             'accessKeyId' => $accesskeyid,
-            'authUrl' => $auth_url,
-            'courseUrl' => $course_url,
+            'authUrl' => $authurl,
+            'courseUrl' => $courseurl,
             'moodleUsername' => $trainer->username,
             'name' => $event->other['name'],
-            'reportUrl' => $report_url,
+            'reportUrl' => $reporturl,
             'ts' => $ts,
             'version' => get_config('mod_wooclap')->version,
         ];
 
-        $curl_data = new StdClass;
-        $curl_data->name = $wooclap->name;
+        $curldata = new StdClass;
+        $curldata->name = $wooclap->name;
 
-        $curl_data->description = isset($wooclap->intro)
+        $curldata->description = isset($wooclap->intro)
         ? $wooclap->intro
         : '';
 
-        $curl_data->quiz = isset($quiz_file) ? $quiz_file : '';
-        $curl_data->moodleUsername = $USER->username;
-        $curl_data->displayName = $displayName;
-        $curl_data->firstName = $firstName;
-        $curl_data->lastName = $lastName;
-        $curl_data->email = $trainer->email;
-        $curl_data->authUrl = $auth_url;
-        $curl_data->courseUrl = $course_url;
-        $curl_data->reportUrl = $report_url;
-        $curl_data->accessKeyId = $accesskeyid;
-        $curl_data->ts = $ts;
+        $curldata->quiz = isset($quizfile) ? $quizfile : '';
+        $curldata->moodleUsername = $USER->username;
+        $curldata->displayName = $displayname;
+        $curldata->firstName = $firstname;
+        $curldata->lastName = $lastname;
+        $curldata->email = $trainer->email;
+        $curldata->authUrl = $authurl;
+        $curldata->courseUrl = $courseurl;
+        $curldata->reportUrl = $reporturl;
+        $curldata->accessKeyId = $accesskeyid;
+        $curldata->ts = $ts;
 
         // For compatibility reason, only add wooclapeventid to the data_token
         // ...when it is actually used.
         if (isset($wooclap->wooclapeventid) && $wooclap->wooclapeventid != 'none') {
-            $data_token['wooclapeventid'] = $wooclap->wooclapeventid;
-            $curl_data->wooclapeventid = $wooclap->wooclapeventid;
+            $datatoken['wooclapeventid'] = $wooclap->wooclapeventid;
+            $curldata->wooclapeventid = $wooclap->wooclapeventid;
         }
 
         if (isset($wooclap->linkedwooclapeventslug)) {
-            $data_token['linkedwooclapeventslug'] = $wooclap->linkedwooclapeventslug;
-            $curl_data->linkedwooclapeventslug = $wooclap->linkedwooclapeventslug;
+            $datatoken['linkedwooclapeventslug'] = $wooclap->linkedwooclapeventslug;
+            $curldata->linkedwooclapeventslug = $wooclap->linkedwooclapeventslug;
         }
 
-        $curl_data->token = wooclap_generate_token(
-            'CREATEv3?' . wooclap_http_build_query($data_token)
+        $curldata->token = wooclap_generate_token(
+            'CREATEv3?' . wooclap_http_build_query($datatoken)
         );
-        $curl_data->version = get_config('mod_wooclap')->version;
+        $curldata->version = get_config('mod_wooclap')->version;
 
         // Call the Wooclap CREATEv3 webservice.
         $curl = new wooclap_curl();
@@ -202,7 +202,7 @@ class mod_wooclap_observer {
         $headers[0] = "Content-Type: application/json";
         $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
         $curl->setHeader($headers);
-        $response = $curl->post($createurl, json_encode($curl_data));
+        $response = $curl->post($createurl, json_encode($curldata));
         $curlinfo = $curl->info;
 
         if (!$response || !is_array($curlinfo) || $curlinfo['http_code'] !== 200) {
@@ -218,42 +218,42 @@ class mod_wooclap_observer {
             ['id' => $event->other['instanceid']]
         );
 
-        $response_data = json_decode($response);
+        $responsedata = json_decode($response);
 
-        $activity->editurl = $response_data->viewUrl;
-        $activity->linkedwooclapeventslug = $response_data->wooclapEventSlug;
+        $activity->editurl = $responsedata->viewUrl;
+        $activity->linkedwooclapeventslug = $responsedata->wooclapEventSlug;
         $DB->update_record('wooclap', $activity);
 
         $role = wooclap_get_role(context_course::instance($cm->course));
-        $canEdit = $role == 'teacher';
+        $canedit = $role == 'teacher';
 
         // Make a JOINv3 Wooclap API call to view Wooclap event in an iframe.
-        $ts = get_isotime();
-        $data_token = [
+        $ts = wooclap_get_isotime();
+        $datatoken = [
             'accessKeyId' => $accesskeyid,
-            'authUrl' => $auth_url,
-            'canEdit' => $canEdit,
-            'courseUrl' => $course_url,
+            'authUrl' => $authurl,
+            'canEdit' => $canedit,
+            'courseUrl' => $courseurl,
             'moodleUsername' => $trainer->username,
-            'reportUrl' => $report_url,
+            'reportUrl' => $reporturl,
             'ts' => $ts,
             'version' => get_config('mod_wooclap')->version,
             'wooclapEventSlug' => $activity->linkedwooclapeventslug,
         ];
         $token = wooclap_generate_token(
-            'JOINv3?' . wooclap_http_build_query($data_token)
+            'JOINv3?' . wooclap_http_build_query($datatoken)
         );
-        $data_frame = [
+        $dataframe = [
             'accessKeyId' => $accesskeyid,
-            'authUrl' => $auth_url,
-            'canEdit' => $canEdit,
-            'courseUrl' => $course_url,
-            'displayName' => $displayName,
+            'authUrl' => $authurl,
+            'canEdit' => $canedit,
+            'courseUrl' => $courseurl,
+            'displayName' => $displayname,
             'email' => $trainer->email,
-            'firstName' => $firstName,
-            'lastName' => $lastName,
+            'firstName' => $firstname,
+            'lastName' => $lastname,
             'moodleUsername' => $trainer->username,
-            'reportUrl' => $report_url,
+            'reportUrl' => $reporturl,
             'role' => $role,
             'token' => $token,
             'ts' => $ts,
@@ -261,11 +261,11 @@ class mod_wooclap_observer {
             'wooclapEventSlug' => $activity->linkedwooclapeventslug,
         ];
 
-        // Do not display frame view when duplicating an activity. 
+        // Do not display frame view when duplicating an activity.
         // Moodle does not expect HTML when duplicating via dropdown.
         if (!isset($wooclap->linkedwooclapeventslug)) {
             wooclap_frame_view(
-                $response_data->viewUrl . '?' . wooclap_http_build_query($data_frame),
+                $responsedata->viewUrl . '?' . wooclap_http_build_query($dataframe),
                 true
             );
         }

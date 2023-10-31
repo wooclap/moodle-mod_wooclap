@@ -24,14 +24,14 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $defaultBaseUrl = 'https://app.wooclap.com';
+    $defaultbaseurl = 'https://app.wooclap.com';
     $settings->add(new admin_setting_heading('wooclap/config', get_string('wooclapsettings', 'wooclap'), ''));
     $settings->add(new admin_setting_configtext_with_maxlength(
         'wooclap/accesskeyid',
         get_string('accesskeyid', 'wooclap'),
         get_string('accesskeyid-description', 'wooclap'),
         '',
-        PARAM_RAW_TRIMMED,
+        PARAM_TEXT,
         50,
         128
     ));
@@ -40,7 +40,7 @@ if ($ADMIN->fulltree) {
         get_string('secretaccesskey', 'wooclap'),
         get_string('secretaccesskey-description', 'wooclap'),
         '',
-        PARAM_RAW_TRIMMED,
+        PARAM_TEXT,
         50,
         128
     ));
@@ -48,7 +48,7 @@ if ($ADMIN->fulltree) {
         'wooclap/baseurl',
         get_string('baseurl', 'wooclap'),
         get_string('baseurl-description', 'wooclap'),
-        $defaultBaseUrl,
+        $defaultbaseurl,
         PARAM_URL,
         50,
         256
