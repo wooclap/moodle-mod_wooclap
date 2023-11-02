@@ -17,34 +17,35 @@
 
 /**
  * User Authentication endpoint
+ * Any user can access this script to authenticate themselves.
  *
  * @package    mod_wooclap
  * @copyright  2018 Cblue sprl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// No login check is expected here because this script checks the login itself
+// No login check is expected here because this script checks the login itself.
 // @codingStandardsIgnoreLine
-require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/lib.php';
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 
 global $SESSION, $USER;
 
 $courseid = required_param('course', PARAM_INT);
 $cmid = required_param('cm', PARAM_INT);
 $callback = required_param('callback', PARAM_URL);
-$redirectTo = optional_param('redirectTo', null, PARAM_URL);
+$redirectto = optional_param('redirectTo', null, PARAM_URL);
 
-if (!isValidCallbackUrl($callback)) {
-    print_error('error-invalid-callback-url', 'wooclap');
+if (!wooclap_is_valid_callback_url($callback)) {
+    throw new \moodle_exception('error-invalid-callback-url', 'wooclap');
 }
 
-if(!is_null($redirectTo)) {
-    $callback .= (parse_url($callback, PHP_URL_QUERY) ? '&' : '?') . 'redirectTo=' . urlencode($redirectTo);
+if (!is_null($redirectto)) {
+    $callback .= (parse_url($callback, PHP_URL_QUERY) ? '&' : '?') . 'redirectTo=' . urlencode($redirectto);
 }
 
 if (isset($USER) && is_object($USER)) {
-    $authUser = $USER;
+    $authuser = $USER;
 }
 
 if (isset($SESSION)) {
@@ -52,11 +53,11 @@ if (isset($SESSION)) {
     $SESSION->wooclap_cmid = $cmid;
     $SESSION->wooclap_callback = $callback;
 } else {
-    print_error('error-auth-nosession', 'wooclap');
+    throw new \moodle_exception('error-auth-nosession', 'wooclap');
 }
 
 try {
-    if (!$authUser || $authUser->id == 0) {
+    if (!$authuser || $authuser->id == 0) {
         $data = [
             'course' => $courseid,
             'cm' => $cmid,
@@ -68,8 +69,8 @@ try {
 
         redirect($CFG->wwwroot . '/login/index.php');
     } else {
-        wooclap_redirect_auth($authUser->id);
+        wooclap_redirect_auth($authuser->id);
     }
 } catch (Exception $exc) {
-    print_error('error-couldnotredirect', 'wooclap');
+    throw new \moodle_exception('error-couldnotredirect', 'wooclap');
 }

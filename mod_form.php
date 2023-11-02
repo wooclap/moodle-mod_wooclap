@@ -23,8 +23,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once $CFG->dirroot . '/course/moodleform_mod.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
 class mod_wooclap_mod_form extends moodleform_mod {
 
@@ -70,11 +70,11 @@ class mod_wooclap_mod_form extends moodleform_mod {
                 $quizid = $wooclap->quiz;
             }
         }
-        $quizz_db = $DB->get_records('quiz', ['course' => $COURSE->id]);
+        $quizzdb = $DB->get_records('quiz', ['course' => $COURSE->id]);
         $quizz = [];
         $quizz[0] = get_string('none');
-        foreach ($quizz_db as $quiz_db) {
-            $quizz[$quiz_db->id] = $quiz_db->name;
+        foreach ($quizzdb as $quizdb) {
+            $quizz[$quizdb->id] = $quizdb->name;
         }
         $mform->addElement('select', 'quiz', get_string('quiz', 'wooclap'), $quizz);
         $mform->setType('quiz', PARAM_INT);
@@ -84,19 +84,19 @@ class mod_wooclap_mod_form extends moodleform_mod {
 
         // Fetch a list of the user's Wooclap events from the Wooclap API
         // ...so that the user can choose to copy an existing event.
-        $ts = get_isotime();
+        $ts = wooclap_get_isotime();
         try {
             $accesskeyid = get_config('wooclap', 'accesskeyid');
         } catch (Exception $exc) {
             echo $exc->getMessage();
         }
         try {
-            $eventsListUrl = wooclap_get_events_list_url();
+            $eventslisturl = wooclap_get_events_list_url();
         } catch (Exception $exc) {
             echo $exc->getMessage();
         }
 
-        $data_token = [
+        $datatoken = [
             'accessKeyId' => $accesskeyid,
             'email' => $USER->email,
             'moodleUsername' => $USER->username,
@@ -104,15 +104,15 @@ class mod_wooclap_mod_form extends moodleform_mod {
             'version' => get_config('mod_wooclap')->version,
         ];
 
-        $curl_data = new StdClass;
-        $curl_data->moodleUsername = $USER->username;
-        $curl_data->accessKeyId = $accesskeyid;
-        $curl_data->email = $USER->email;
-        $curl_data->ts = $ts;
-        $curl_data->token = wooclap_generate_token(
-            'EVENTS_LIST_V3?' . wooclap_http_build_query($data_token)
+        $curldata = new StdClass;
+        $curldata->moodleUsername = $USER->username;
+        $curldata->accessKeyId = $accesskeyid;
+        $curldata->email = $USER->email;
+        $curldata->ts = $ts;
+        $curldata->token = wooclap_generate_token(
+            'EVENTS_LIST_V3?' . wooclap_http_build_query($datatoken)
         );
-        $curl_data->version = get_config('mod_wooclap')->version;
+        $curldata->version = get_config('mod_wooclap')->version;
 
         $curl = new wooclap_curl();
         $headers = [];
@@ -120,26 +120,26 @@ class mod_wooclap_mod_form extends moodleform_mod {
         $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
         $curl->setHeader($headers);
         $response = $curl->get(
-            $eventsListUrl . '?' . wooclap_http_build_query($curl_data)
+            $eventslisturl . '?' . wooclap_http_build_query($curldata)
         );
         $curlinfo = $curl->info;
 
-        $wooclap_events = [];
-        $wooclap_events['none'] = get_string('none');
+        $wooclapevents = [];
+        $wooclapevents['none'] = get_string('none');
         if ($response && is_array($curlinfo) && $curlinfo['http_code'] == 200) {
-            foreach (json_decode($response) as $w_event) {
-                $wooclap_events[$w_event->_id] = $w_event->name;
+            foreach (json_decode($response) as $wevent) {
+                $wooclapevents[$wevent->_id] = $wevent->name;
             }
 
         } else {
-            print_error('error-couldnotloadevents', 'wooclap');
+            throw new \moodle_exception('error-couldnotloadevents', 'wooclap');
         }
 
         $mform->addElement(
             'select',
             'wooclapeventid',
             get_string('wooclapeventid', 'wooclap'),
-            $wooclap_events
+            $wooclapevents
         );
         $mform->setType('wooclapeventid', PARAM_TEXT);
         $mform->setDefault('wooclapeventid', 'none');
@@ -195,12 +195,12 @@ class mod_wooclap_mod_form extends moodleform_mod {
     /**
      * @param array $default_values
      */
-    public function data_preprocessing(&$default_values) {
-        parent::data_preprocessing($default_values);
+    public function data_preprocessing(&$defaultvalues) {
+        parent::data_preprocessing($defaultvalues);
 
-        if (empty($default_values['customcompletion'])) {
-            $default_values['customcompletion'] = 1;
+        if (empty($defaultvalues['customcompletion'])) {
+            $defaultvalues['customcompletion'] = 1;
         }
-        $default_values['completion'] = 2;
+        $defaultvalues['completion'] = 2;
     }
 }

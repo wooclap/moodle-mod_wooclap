@@ -27,35 +27,35 @@
 // ...and we authenticate request with a token.
 
 // @codingStandardsIgnoreLine
-require_once __DIR__ . '/../../config.php';
-require_once $CFG->dirroot . '/mod/wooclap/lib.php';
-require_once $CFG->dirroot . '/lib/completionlib.php';
+require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/mod/wooclap/lib.php');
+require_once($CFG->dirroot . '/lib/completionlib.php');
 
 $cmid = required_param('cm', PARAM_INT);
 $username = required_param('moodleUsername', PARAM_TEXT);
 $completion = required_param('completion', PARAM_TEXT);
 $score = required_param('score', PARAM_FLOAT);
-$accessKeyId = required_param('accessKeyId', PARAM_TEXT);
+$accesskeyid = required_param('accessKeyId', PARAM_TEXT);
 $ts = required_param('ts', PARAM_TEXT);
 $token = required_param('token', PARAM_TEXT);
 
 try {
-    $data_token = [
+    $datatoken = [
         'accessKeyId' => get_config('wooclap', 'accesskeyid'),
         'completion' => $completion,
         'moodleUsername' => $username,
         'score' => $score,
         'ts' => $ts,
     ];
-    $token_calc = wooclap_generate_token('REPORTv3?' . wooclap_http_build_query($data_token));
+    $tokencalc = wooclap_generate_token('REPORTv3?' . wooclap_http_build_query($datatoken));
 
-    if ($token === $token_calc) {
+    if ($token === $tokencalc) {
         if ($completion == 'passed') {
-            $completion_param = COMPLETION_COMPLETE_PASS;
+            $completionparam = COMPLETION_COMPLETE_PASS;
         } else if ($completion == 'incomplete') {
-            $completion_param = COMPLETION_INCOMPLETE;
+            $completionparam = COMPLETION_INCOMPLETE;
         } else {
-            $completion_param = COMPLETION_COMPLETE_FAIL;
+            $completionparam = COMPLETION_COMPLETE_FAIL;
         }
 
         $cm = get_coursemodule_from_id('wooclap', $cmid);
@@ -65,14 +65,14 @@ try {
         // Find user from username.
         $userdb = $DB->get_record('user', ['username' => $username], 'id', MUST_EXIST);
 
-        $gradestatus = wooclap_update_grade($wooclapinstance, $userdb->id, $score, $completion_param);
+        $gradestatus = wooclap_update_grade($wooclapinstance, $userdb->id, $score, $completionparam);
 
         $completion = new completion_info($course);
-        $completion->update_state($cm, $completion_param, $userdb->id);
+        $completion->update_state($cm, $completionparam, $userdb->id);
     } else {
-        print_error('error-invalidtoken', 'wooclap');
+        throw new \moodle_exception('error-invalidtoken', 'wooclap');
         header("HTTP/1.0 403");
     }
 } catch (Exception $e) {
-    print_error('error-couldnotupdatereport', 'wooclap');
+    throw new \moodle_exception('error-couldnotupdatereport', 'wooclap');
 }

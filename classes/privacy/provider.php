@@ -30,21 +30,23 @@ use core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->libdir . '/filelib.php';
+require_once($CFG->libdir . '/filelib.php');
 
 // The Privacy API implements an interface which is not present in older versions of Moodle
 // So we polyfill it.
 
 if (interface_exists('\core_privacy\local\request\userlist')) {
-    interface wooclap_userlist extends \core_privacy\local\request\userlist {}
+    interface wooclap_userlist extends \core_privacy\local\request\userlist {
+    }
 } else {
-    interface wooclap_userlist {};
+    interface wooclap_userlist {
+    };
 }
 
 class provider implements
-\core_privacy\local\metadata\provider,
-wooclap_userlist,
-\core_privacy\local\request\plugin\provider {
+        \core_privacy\local\metadata\provider,
+        wooclap_userlist,
+        \core_privacy\local\request\plugin\provider {
 
     /**
      * Return the fields which contain personal data.
@@ -52,7 +54,7 @@ wooclap_userlist,
      * @param collection $items a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function get_metadata(collection $collection): collection{
+    public static function get_metadata(collection $collection): collection {
 
         $collection->add_external_location_link('wooclap_server', [
             'userid' => 'privacy:metadata:wooclap_server:userid',
@@ -67,7 +69,7 @@ wooclap_userlist,
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function get_contexts_for_userid(int $userid): contextlist{
+    public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         // First add wooclap activity created by the user.
@@ -207,7 +209,7 @@ wooclap_userlist,
      * @param \context $context the context to delete in.
      */
     public static function delete_data_for_all_users_in_context(\context $context) {
-        debugging('The Wooclap plugin does not currently support the deleting of user data. ', DEBUG_DEVELOPER);
+        // The Wooclap plugin does not currently support the deletion of user data.
     }
     /**
      * Delete all user data for the specified user, in the specified contexts.
@@ -215,7 +217,7 @@ wooclap_userlist,
      * @param approved_contextlist $contextlist a list of contexts approved for deletion.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        debugging('The Wooclap plugin does not currently support the deleting of user data. ', DEBUG_DEVELOPER);
+        // The Wooclap plugin does not currently support the deletion of user data.
     }
     /**
      * Delete multiple users within a single context.
