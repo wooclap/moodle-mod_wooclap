@@ -57,6 +57,8 @@ function wooclap_supports($feature) {
         case FEATURE_COMPLETION_TRACKS_VIEWS:
         case FEATURE_GRADE_OUTCOMES:
             return false;
+        case FEATURE_MOD_PURPOSE:
+            return MOD_PURPOSE_COMMUNICATION;
 
         default:
             return null;
@@ -426,6 +428,8 @@ function wooclap_validate_callback_url($callbackurl) {
 
 /**
  * Update mod_wooclap grades in the gradebook.
+ *
+ * Needed by {@see grade_update_mod_grades()}.
  *
  * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
  * @param int $userid Update grade of specific user only, 0 means all participants.
