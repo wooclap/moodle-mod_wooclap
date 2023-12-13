@@ -1,0 +1,13 @@
+/* <=4.2: Make the Wooclap activity icon take the whole space. */
+.modicon_wooclap.activityiconcontainer img, .modtype_wooclap .activityiconcontainer img {
+	width: 50px;
+	height: 50px;
+	border-radius: 4px;
+}
+
+/* >=4.3: Make the Wooclap activity icon take the whole space. */
+.modicon_wooclap.activityiconcontainer.smaller img, .modtype_wooclap .activityiconcontainer.smaller img {
+	width: 32px;
+	height: 32px;
+	border-radius: 4px;
+}
