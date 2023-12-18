@@ -86,29 +86,16 @@ function wooclap_delete_instance($id) {
  * @return bool
  * @throws dml_exception
  */
-function wooclap_update_instance($data) {
+function wooclap_update_instance($wooclap) {
     global $DB;
 
-    if (!isset($data->update)) {
+    if (!isset($wooclap->update)) {
         return false;
     }
 
-    $cm = $DB->get_record('course_modules', ['id' => $data->update]);
-
-    $wooclap = $DB->get_record('wooclap', ['id' => $cm->instance]);
-
-    $activity = new StdClass;
-    $activity->id = $wooclap->id;
-    $activity->course = $data->course;
-    $activity->name = $data->name;
-    $activity->intro = $data->intro;
-    $activity->introformat = $data->introformat;
-    $activity->editurl = $wooclap->editurl;
-    $activity->quiz = $data->quiz;
-    $activity->timecreated = $wooclap->timecreated;
-    $activity->timemodified = time();
-    $activity->wooclapeventid = $data->wooclapeventid;
-    $DB->update_record('wooclap', $activity);
+    $wooclap->id = $wooclap->instance;
+    $wooclap->timemodified = time();
+    $DB->update_record('wooclap', $wooclap);
 
     wooclap_grade_item_update($wooclap);
 
@@ -120,24 +107,19 @@ function wooclap_update_instance($data) {
  * @return bool|int
  * @throws dml_exception
  */
-function wooclap_add_instance($data) {
+function wooclap_add_instance($wooclap) {
     global $DB, $USER;
 
-    $activity = new StdClass;
-    $activity->course = $data->course;
-    $activity->name = $data->name;
-    $activity->intro = $data->intro;
-    $activity->introformat = $data->introformat;
     // Fill editurl later with curl response from observer::course_module_created.
-    $activity->editurl = '';
-    $activity->quiz = $data->quiz;
-    $activity->authorid = $USER->id;
-    $activity->timecreated = time();
-    $activity->timemodified = $activity->timecreated;
-    $activity->wooclapeventid = $data->wooclapeventid;
-    $activity->id = $DB->insert_record('wooclap', $activity);
+    $wooclap->editurl = '';
+    $wooclap->authorid = $USER->id;
+    $wooclap->timecreated = time();
+    $wooclap->timemodified = $wooclap->timecreated;
 
-    return $activity->id;
+    $wooclap->id = $DB->insert_record('wooclap', $wooclap);
+    wooclap_grade_item_update($wooclap);
+
+    return $wooclap->id;
 }
 
 /**
@@ -241,7 +223,7 @@ function wooclap_redirect_auth($userid) {
         $cm = get_coursemodule_from_id('wooclap', $SESSION->wooclap_cmid);
         $coursecontext = context_course::instance($cm->course);
         $userdb = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
-        $activity = $DB->get_record('wooclap', ['id' => $cm->instance], '*', MUST_EXIST);
+        $wooclap = $DB->get_record('wooclap', ['id' => $cm->instance], '*', MUST_EXIST);
         $accesskeyid = get_config('wooclap', 'accesskeyid');
     } catch (Exception $e) {
         throw new \moodle_exception('error-couldnotauth', 'wooclap');
@@ -258,7 +240,7 @@ function wooclap_redirect_auth($userid) {
         'role' => $role,
         'ts' => $ts,
         'version' => get_config('mod_wooclap')->version,
-        'wooclapEventSlug' => $activity->linkedwooclapeventslug,
+        'wooclapEventSlug' => $wooclap->linkedwooclapeventslug,
     ];
 
     $data = [
@@ -274,7 +256,7 @@ function wooclap_redirect_auth($userid) {
         'ts' => $ts,
         'token' => wooclap_generate_token('AUTHv3?' . wooclap_http_build_query($datatoken)),
         'version' => get_config('mod_wooclap')->version,
-        'wooclapEventSlug' => $activity->linkedwooclapeventslug,
+        'wooclapEventSlug' => $wooclap->linkedwooclapeventslug,
     ];
 
     $callbackurl = wooclap_validate_callback_url($SESSION->wooclap_callback);
@@ -388,14 +370,14 @@ function wooclap_validate_callback_url($callbackurl) {
 }
 
 /**
- * @param $wooclapinstance
+ * @param $wooclap the wooclap activity.
  * @param $userid
  * @param $gradeval
  * @param $completionstatus
  * @return bool
  * @throws dml_exception
  */
-function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completionstatus) {
+function wooclap_update_grade($wooclap, $userid, $gradeval, $completionstatus) {
     global $CFG, $DB;
     require_once($CFG->libdir . '/gradelib.php');
 
@@ -407,10 +389,10 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
 
     // 1 - trying to fetch the max grade from the course itself
     $params = [
-        'courseid' => $wooclapinstance->course,
+        'courseid' => $wooclap->course,
         'itemtype' => 'mod',
         'itemmodule' => 'wooclap',
-        'iteminstance' => $wooclapinstance->id,
+        'iteminstance' => $wooclap->id,
         'itemnumber' => 0
     ];
     if ($gradeitem = grade_item::fetch($params)) {
@@ -431,16 +413,16 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
 
     $status = grade_update(
         'mod/wooclap',
-        $wooclapinstance->course,
+        $wooclap->course,
         'mod',
         'wooclap',
-        $wooclapinstance->id,
+        $wooclap->id,
         0,
         $grade,
-        ['itemname' => $wooclapinstance->name]
+        ['itemname' => $wooclap->name]
     );
 
-    $record = $DB->get_record('wooclap_completion', ['wooclapid' => $wooclapinstance->id, 'userid' => $userid], 'id');
+    $record = $DB->get_record('wooclap_completion', ['wooclapid' => $wooclap->id, 'userid' => $userid], 'id');
     if ($record) {
         $id = $record->id;
     } else {
@@ -457,7 +439,7 @@ function wooclap_update_grade($wooclapinstance, $userid, $gradeval, $completions
         ]);
     } else {
         $DB->insert_record('wooclap_completion', [
-            'wooclapid' => $wooclapinstance->id,
+            'wooclapid' => $wooclap->id,
             'userid' => $userid,
             'timecreated' => $time,
             'timemodified' => $time,
@@ -550,25 +532,47 @@ function wooclap_get_completion_state($course, $cm, $userid, $type) {
 /**
  * Create/update grade item for given wooclap activity
  *
- * @param $wooclapinstance
+ * @param $wooclap the wooclap activity.
  * @param null $grades
  * @return int
  */
-function wooclap_grade_item_update($wooclapinstance, $grades = null) {
+function wooclap_grade_item_update($wooclap, $grades = null) {
     global $CFG;
     if (!function_exists('grade_update')) {
         // We use a workaround for buggy PHP versions.
         require_once($CFG->libdir . '/gradelib.php');
     }
+    if (!isset($wooclap->courseid)) {
+        $wooclap->courseid = $wooclap->course;
+    }
+
+    $params = array('itemname' => $wooclap->name);
+
+    if ($wooclap->grade > 0) {
+        $params['gradetype'] = GRADE_TYPE_VALUE;
+        $params['grademax']  = $wooclap->grade;
+        $params['grademin']  = 0;
+    } else if ($wooclap->grade < 0) {
+        $params['gradetype'] = GRADE_TYPE_SCALE;
+        $params['scaleid']   = -$wooclap->grade;
+    } else {
+        $params['gradetype'] = GRADE_TYPE_TEXT;
+    }
+
+    if ($grades === 'reset') {
+        $params['reset'] = true;
+        $grades = null;
+    }
+
     return grade_update(
         'mod/wooclap',
-        $wooclapinstance->course,
+        $wooclap->course,
         'mod',
         'wooclap',
-        $wooclapinstance->id,
+        $wooclap->id,
         0,
         $grades,
-        ['itemname' => $wooclapinstance->name]
+        $params
     );
 }
 
