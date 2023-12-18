@@ -144,6 +144,9 @@ class mod_wooclap_mod_form extends moodleform_mod {
         $mform->setType('wooclapeventid', PARAM_TEXT);
         $mform->setDefault('wooclapeventid', 'none');
 
+        // Set standard grading options in the activity form.
+        $this->standard_grading_coursemodule_elements();
+
         // Set default options.
         $this->standard_coursemodule_elements();
 

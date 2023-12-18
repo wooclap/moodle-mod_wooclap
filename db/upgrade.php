@@ -125,5 +125,16 @@ function xmldb_wooclap_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021050100, 'wooclap');
     }
 
+    if ($oldversion < 2023101900) {
+        $table = new xmldb_table('wooclap');
+        $field = new xmldb_field('grade', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '100', null);
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2023101900, 'wooclap');
+    }
+
     return true;
 }
