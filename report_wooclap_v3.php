@@ -50,10 +50,13 @@ $tokencalc = wooclap_generate_token('REPORTv3?' . wooclap_http_build_query($data
 
 if ($token === $tokencalc) {
     if ($completion == 'passed') {
+        // Passed: >50% score
         $completionparam = COMPLETION_COMPLETE_PASS;
     } else if ($completion == 'incomplete') {
+        // Incomplete: participant hasn't answered all the (correctable) questions
         $completionparam = COMPLETION_INCOMPLETE;
     } else {
+        // Failed: <50% score
         $completionparam = COMPLETION_COMPLETE_FAIL;
     }
 
@@ -66,8 +69,10 @@ if ($token === $tokencalc) {
 
     $gradestatus = wooclap_update_grade($wooclapinstance, $userdb->id, $score, $completionparam);
 
+    // COMPLETION_COMPLETE: The user has completed this activity.
+    // It is not specified whether they have passed or failed it.
     $completion = new completion_info($course);
-    $completion->update_state($cm, $completionparam, $userdb->id);
+    $completion->update_state($cm, COMPLETION_COMPLETE, $userdb->id);
 } else {
     throw new \moodle_exception('error-invalidtoken', 'wooclap');
     header("HTTP/1.0 403");

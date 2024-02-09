@@ -42,7 +42,7 @@ class backup_wooclap_activity_structure_step extends backup_activity_structure_s
             "introformat", "editurl", "quiz",
             "authorid", "customcompletion", "timecreated",
             "timemodified", "wooclapeventid",
-            "linkedwooclapeventslug",
+            "linkedwooclapeventslug", "grade",
         ));
 
         $completions = new backup_nested_element('completions');

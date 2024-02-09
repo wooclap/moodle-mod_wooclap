@@ -50,6 +50,7 @@ $string['baseurl-description'] = 'Sert uniquement au débogage ou au test. Ne mo
 
 $string['nowooclap'] = 'Il n\'y a pas d\'instance Wooclap';
 $string['customcompletion'] = 'Suivi d\'achèvement mis à jour uniquement par Wooclap';
+$string['customcompletion_help'] = 'Si cette option est active, l\'activité est considérée comme terminée lorsqu\'un élève a répondu à au moins une question Wooclap.';
 $string['customcompletiongroup'] = 'Conditions de suivi d\'achèvement Wooclap';
 
 // Consent screen.

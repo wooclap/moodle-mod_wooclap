@@ -43,13 +43,17 @@ require_once($CFG->dirroot . '/mod/wooclap/format.php');
 function wooclap_supports($feature) {
     switch ($feature) {
         case FEATURE_BACKUP_MOODLE2:
+            // activity has custom completion rules:
         case FEATURE_COMPLETION_HAS_RULES:
+            // activity provides a grade for students:
         case FEATURE_GRADE_HAS_GRADE:
         case FEATURE_GROUPINGS:
         case FEATURE_GROUPS:
         case FEATURE_MOD_INTRO:
         case FEATURE_SHOW_DESCRIPTION:
             return true;
+
+        // marked complete as soon as a user clicks on it:
         case FEATURE_COMPLETION_TRACKS_VIEWS:
         case FEATURE_GRADE_OUTCOMES:
             return false;
@@ -505,28 +509,24 @@ function wooclap_frame_view($src, $nohtmlblock=false) {
  * @param $course
  * @param $cm
  * @param $userid
- * @param $type
- * @return bool
+ * @param $type boolean COMPLETION_AND (true) or COMPLETION_OR (false)
+ * - COMPLETION_AND: if multiple conditions are selected, the user must meet all of them.
+ * - COMPLETION_OR: if multiple conditions are selected, any one of them is good enough to complete the activity.
+ * @return bool - whether the user has completed the activity or not.
  * @throws dml_exception
  */
 function wooclap_get_completion_state($course, $cm, $userid, $type) {
     global $DB;
 
-    $wooclap = $DB->get_record('wooclap', array('id' => $cm->instance), '*',
-        MUST_EXIST);
+    $wooclap = $DB->get_record('wooclap', array('id' => $cm->instance), '*', MUST_EXIST);
 
-    $result = $type; // Default return value.
-    // If completion option is enabled, evaluate it and return true/false.
     if ($wooclap->customcompletion) {
-        $value = $DB->record_exists('wooclap_completion', array(
-            'wooclapid' => $wooclap->id, 'userid' => $userid, 'completionstatus' => 2));
-        if ($type == COMPLETION_AND) {
-            $result = $result && $value;
-        } else {
-            $result = $result || $value;
-        }
+        // Find the completion record for this user and this activity.
+        // Any grade means they participated, so they get activity completion.
+        return $DB->record_exists('wooclap_completion', array('wooclapid' => $wooclap->id, 'userid' => $userid));
     }
-    return $result;
+
+    return $type;
 }
 
 /**
