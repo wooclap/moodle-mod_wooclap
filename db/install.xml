@@ -19,7 +19,7 @@
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="wooclapeventid" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap ID of the event from which this activity was duplicated (if any)"/>
         <FIELD NAME="linkedwooclapeventslug" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap slug of the event related to the activity"/>
-        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" UNSIGNED="false" COMMENT="This corresponds to the maximum grading; if it's 0, it means that the activity cannot be graded."/>
+        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" UNSIGNED="false" COMMENT="This corresponds to the maximum grading; if it's 0, it means that the activity cannot be graded."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

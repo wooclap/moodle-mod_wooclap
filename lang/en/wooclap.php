@@ -52,6 +52,7 @@ $string['showconsentscreen-description'] = 'If active, Wooclap will ask particip
 
 $string['nowooclap'] = 'There are no Wooclap instances';
 $string['customcompletion'] = 'Completion state updated only by Wooclap';
+$string['customcompletion_help'] = 'If enabled, the activity is considered as complete when a student has interacted with at least one Wooclap question.';
 $string['customcompletiongroup'] = 'Wooclap custom completion';
 
 // Consent screen.
