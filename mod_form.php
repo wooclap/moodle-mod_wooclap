@@ -176,13 +176,13 @@ class mod_wooclap_mod_form extends moodleform_mod {
         $mform->setType('customcompletion', PARAM_BOOL);
         $mform->addGroup(
             $group,
-            'customcompletiongroup',
+            'customcompletiongroup_wooclap',
             get_string('customcompletiongroup', 'wooclap'),
             [' '],
             false
         );
         $mform->addHelpButton(
-            'customcompletiongroup',
+            'customcompletiongroup_wooclap',
             'customcompletion',
             'wooclap'
         );
@@ -201,7 +201,16 @@ class mod_wooclap_mod_form extends moodleform_mod {
         $mform->disabledIf('customcompletion', 'completionusegrade', 'checked');
         $mform->disabledIf('customcompletion', 'completionpassgrade', 'checked');
 
-        return ['customcompletiongroup'];
+        return ['customcompletiongroup_wooclap'];
+    }
+
+    /**
+     * Add completion grading elements to the form and return the list of element ids.
+     *
+     * @return array Array of string IDs of added items, empty array if none
+     */
+    public function add_completiongrade_rules(): array {
+        return [];
     }
 
     /**
