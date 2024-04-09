@@ -82,7 +82,7 @@ function mod_wooclap_v3_upgrade() {
             $idstousernamesmapping[$moodleuserid] = $user->username;
         }
 
-        $jsonmapping = json_encode($idstousernamesmapping);
+        $jsonmapping = json_encode($idstousernamesmapping, JSON_UNESCAPED_UNICODE);
 
         $v3upgradestep2url = sprintf("%s/api/moodle/v3/upgrade-step-2", $baseurl);
         $step2datatoken = [
@@ -102,7 +102,7 @@ function mod_wooclap_v3_upgrade() {
         $curldatastep2->version = $version;
 
         $response = $curl->post(
-            $v3upgradestep2url, json_encode($curldatastep2)
+            $v3upgradestep2url, json_encode($curldatastep2, JSON_UNESCAPED_UNICODE)
         );
         $curlinfo = $curl->info;
 
