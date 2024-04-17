@@ -54,7 +54,7 @@ class provider implements
      * @param collection $items a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function get_metadata(collection $collection): collection {
+    public static function get_metadata(collection $collection) {
 
         $collection->add_external_location_link('wooclap_server', [
             'userid' => 'privacy:metadata:wooclap_server:userid',
@@ -69,7 +69,7 @@ class provider implements
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function get_contexts_for_userid(int $userid): contextlist {
+    public static function get_contexts_for_userid($userid) {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         // First add wooclap activity created by the user.
