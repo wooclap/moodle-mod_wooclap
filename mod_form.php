@@ -235,7 +235,12 @@ class mod_wooclap_mod_form extends moodleform_mod {
         // 0: do not indicate activity completion.
         // 1: students can mark the activity as completed.
         // 2: show activity as complete when conditions are met.
-        $defaultvalues['completion'] = 2;
+        //
+        // We only set the value if we are creating a new activity.
+        // Otherwise, we keep the option selected by the user.
+        if (isset($defaultvalues['add'])) {
+            $defaultvalues['completion'] = 2;
+        }
 
         // Only set the default custom completion setting if completionusegrade is not set.
         if (empty($defaultvalues['completionusegrade'])) {
