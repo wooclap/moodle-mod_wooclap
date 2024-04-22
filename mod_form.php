@@ -209,7 +209,7 @@ class mod_wooclap_mod_form extends moodleform_mod {
      *
      * @return array Array of string IDs of added items, empty array if none
      */
-    public function add_completiongrade_rules() {
+    public function add_completiongrade_rules(): array {
         return [];
     }
 
