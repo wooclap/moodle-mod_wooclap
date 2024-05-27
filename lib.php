@@ -396,7 +396,7 @@ function wooclap_update_grade($wooclap, $userid, $gradeval, $completionstatus) {
         'itemtype' => 'mod',
         'itemmodule' => 'wooclap',
         'iteminstance' => $wooclap->id,
-        'itemnumber' => 0
+        'itemnumber' => 0,
     ];
     if ($gradeitem = grade_item::fetch($params)) {
         $maxgrade = $gradeitem->grademax;
@@ -675,7 +675,7 @@ function wooclap_load_questions_for_v4($quizid) {
                         [
                             'component' => 'mod_quiz',
                             'questionarea' => 'slot',
-                            'quizid' => $quizid
+                            'quizid' => $quizid,
                         ]
                     );
     return $questions;
