@@ -23,6 +23,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2024042200;
+$plugin->version = 2024052700;
 $plugin->requires = 2016112900;
 $plugin->component = 'mod_wooclap';

@@ -33,7 +33,6 @@ defined('MOODLE_INTERNAL') || die;
 global $CFG;
 require_once($CFG->dirroot . '/mod/wooclap/classes/wooclap_curl.php');
 require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/question/export_form.php');
 require_once($CFG->dirroot . '/mod/wooclap/format.php');
 
 /**
