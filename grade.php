@@ -19,6 +19,8 @@
  * Any logged-in user can access this script, and they are considered as students by default.
  *
  * @package   mod_wooclap
+ * @copyright 2024 Wooclap
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . "/../../config.php");
@@ -30,7 +32,7 @@ $itemnumber = optional_param('itemnumber', 0, PARAM_INT);
 $userid = optional_param('userid', 0, PARAM_INT); // Graded user ID (optional).
 
 $cm = get_coursemodule_from_id('wooclap', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 
 require_login($course, false, $cm);
 
