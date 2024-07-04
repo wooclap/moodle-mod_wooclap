@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Restore task for wooclap module.
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../../../config.php');
+defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/mod/wooclap/backup/moodle2/restore_wooclap_stepslib.php'); // Because it exists (must).
 
 /**
  * wooclap restore task that provides all the settings and steps to perform one complete restore of the activity.
  */
-
-require_once($CFG->dirroot . '/mod/wooclap/backup/moodle2/restore_wooclap_stepslib.php'); // Because it exists (must).
-
 class restore_wooclap_activity_task extends restore_activity_task {
 
     /**
@@ -49,9 +49,9 @@ class restore_wooclap_activity_task extends restore_activity_task {
      * Define the contents in the activity that must be processed by the link decoder.
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
-        $contents[] = new restore_decode_content('wooclap', array('intro'), 'wooclap');
+        $contents[] = new restore_decode_content('wooclap', ['intro'], 'wooclap');
 
         return $contents;
     }
@@ -60,7 +60,7 @@ class restore_wooclap_activity_task extends restore_activity_task {
      * Define the decoding rules for links belonging to the activity to be executed by the link decoder.
      */
     public static function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_decode_rule('WOOCLAPVIEWBYID', '/mod/wooclap/view.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('WOOCLAPINDEX', '/mod/wooclap/index.php?id=$1', 'course');
@@ -71,12 +71,12 @@ class restore_wooclap_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
+     * by the {@see restore_logs_processor} when restoring
      * wooclap logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * of {@see restore_log_rule} objects
      */
     public static function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('wooclap', 'add', 'view.php?id={course_module}', '{wooclap}');
         $rules[] = new restore_log_rule('wooclap', 'update', 'view.php?id={course_module}', '{wooclap}');
@@ -90,16 +90,16 @@ class restore_wooclap_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
+     * by the {@see restore_logs_processor} when restoring
      * course logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * of {@see restore_log_rule} objects
      *
      * Note this rules are applied when restoring course logs
      * by the restore final task, but are defined here at
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     public static function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
         return $rules;
     }
 

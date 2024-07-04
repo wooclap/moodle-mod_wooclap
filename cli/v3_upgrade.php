@@ -20,7 +20,9 @@
  *
  * https://docs.moodle.org/dev/CLI_scripts
  *
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 define('CLI_SCRIPT', true);
@@ -51,7 +53,7 @@ list($options, $unrecognised) = cli_get_params([
 ]);
 
 // Print an error if some parameters were not recognized.
-list($options, $unrecognized) = cli_get_params(array('verbose' => false, 'help' => false), array('v' => 'verbose', 'h' => 'help'));
+list($options, $unrecognized) = cli_get_params(['verbose' => false, 'help' => false], ['v' => 'verbose', 'h' => 'help']);
 
 if ($unrecognised) {
     $unrecognised = implode(PHP_EOL . '  ', $unrecognised);

@@ -15,9 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * The main wooclap configuration form
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
@@ -25,8 +27,17 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
+/**
+ * Module instance settings form
+ *
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_wooclap_mod_form extends moodleform_mod {
 
+    /**
+     * Defines forms elements
+     */
     public function definition() {
         global $CFG, $DB, $COURSE, $USER;
 
@@ -162,8 +173,8 @@ class mod_wooclap_mod_form extends moodleform_mod {
      * Add elements for setting the custom completion rules.
      *
      * @category completion
-     * @return array List of added element names, or names of wrapping group elements.
-     * @throws coding_exception
+     * @return   array List of added element names, or names of wrapping group elements.
+     * @throws   coding_exception
      */
     public function add_completion_rules() {
         $mform = $this->_form;
@@ -209,10 +220,11 @@ class mod_wooclap_mod_form extends moodleform_mod {
     /**
      * Called during validation to see whether some activity-specific completion rules are selected.
      *
-     * @param array $data Input data not yet validated.
+     * @param  array $data Input data not yet validated.
      * @return bool True if one or more rules is enabled, false if none are.
      */
     public function completion_rule_enabled($data) {
         return ($data['customcompletion'] != 0);
     }
 }
+

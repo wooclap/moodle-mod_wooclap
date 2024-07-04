@@ -14,11 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Helper utility to check for deletion of user data.
+ *
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ */
+
 // How to use this script?
 // https://docs.moodle.org/dev/Privacy_API/Utilities .
 
 define('CLI_SCRIPT', true);
-require_once('config.php');
+require(__DIR__.'/../../../config.php');
 require_once("$CFG->libdir/clilib.php");
 
 list($options, $unrecognized) = cli_get_params(
