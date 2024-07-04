@@ -20,6 +20,9 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ .  '/../locallib.php');
 
+/**
+ * Runs the required migrations given the previous "oldversion".
+ */
 function xmldb_wooclap_upgrade($oldversion) {
     global $CFG, $DB, $OUTPUT;
 

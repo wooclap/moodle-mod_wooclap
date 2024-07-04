@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-//
 
 /**
  * @package mod_wooclap
@@ -23,6 +22,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2024052700;
+$plugin->version = 2024070400;
 $plugin->requires = 2016112900;
 $plugin->component = 'mod_wooclap';
