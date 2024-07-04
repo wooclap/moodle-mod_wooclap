@@ -13,8 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-//
-// More info: https://docs.moodle.org/dev/Upgrade_API .
+
+// More info: https://docs.moodle.org/dev/Upgrade_API.
 
 defined('MOODLE_INTERNAL') || die;
 

@@ -24,6 +24,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
 
+/**
+ * Helper class for CURL GET requests.
+ */
 class wooclap_curl extends curl {
     /**
      * HTTP GET method override for PHP_QUERY_RFC3986
