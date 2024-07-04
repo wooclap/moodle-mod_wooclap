@@ -17,10 +17,9 @@
 /**
  * This file contains a library of functions and constants for the wooclap module
  *
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @see https://github.com/moodle/moodle/blob/master/mod/lesson/lib.php#L1693
  * @see https://github.com/moodle/moodle/blob/master/mod/resource/lib.php#L207
@@ -35,15 +34,18 @@ require_once($CFG->dirroot . '/question/editlib.php');
 require_once($CFG->dirroot . '/mod/wooclap/format.php');
 
 /**
- * @param $feature
- * @return bool|null
+ * Returns the information on whether the module supports a feature
+ *
+ * @see plugin_supports() in lib/moodlelib.php
+ * @param string $feature FEATURE_xx constant for requested feature
+ * @return mixed true if the feature is supported, null if unknown
  */
 function wooclap_supports($feature) {
     switch ($feature) {
         case FEATURE_BACKUP_MOODLE2:
-            // activity has custom completion rules:
+            // Activity has custom completion rules.
         case FEATURE_COMPLETION_HAS_RULES:
-            // activity provides a grade for students:
+            // Activity provides a grade for students.
         case FEATURE_GRADE_HAS_GRADE:
         case FEATURE_GROUPINGS:
         case FEATURE_GROUPS:
@@ -51,7 +53,7 @@ function wooclap_supports($feature) {
         case FEATURE_SHOW_DESCRIPTION:
             return true;
 
-        // marked complete as soon as a user clicks on it:
+        // Marked complete as soon as a user clicks on it.
         case FEATURE_COMPLETION_TRACKS_VIEWS:
         case FEATURE_GRADE_OUTCOMES:
             return false;
@@ -62,8 +64,14 @@ function wooclap_supports($feature) {
 }
 
 /**
- * @param int $id
- * @return bool
+ * Removes a wooclap instance from the database.
+ *
+ * Given an ID of an instance of this module,
+ * this function will permanently delete the instance
+ * and any data that depends on it.
+ *
+ * @param int $id Id of the module instance
+ * @return boolean Success/Failure
  * @throws dml_exception
  */
 function wooclap_delete_instance($id) {
@@ -84,7 +92,9 @@ function wooclap_delete_instance($id) {
 }
 
 /**
- * @param $data
+ * Updates an instance of the wooclap activity in the database.
+ *
+ * @param  object $wooclap The wooclap activity.
  * @return bool
  * @throws dml_exception
  */
@@ -105,7 +115,9 @@ function wooclap_update_instance($wooclap) {
 }
 
 /**
- * @param $data
+ * Add a new instance of the wooclap activity to the database.
+ *
+ * @param object $wooclap The wooclap activity.
  * @return bool|int
  * @throws dml_exception
  */
@@ -125,7 +137,9 @@ function wooclap_add_instance($wooclap) {
 }
 
 /**
- * @param int $id
+ * Get the course module instance.
+ *
+ * @param  int $id
  * @return mixed
  * @throws Exception
  */
@@ -139,6 +153,8 @@ function wooclap_get_instance($id) {
 }
 
 /**
+ * Get the create URL.
+ *
  * @return string
  */
 function wooclap_get_create_url() {
@@ -148,6 +164,8 @@ function wooclap_get_create_url() {
 }
 
 /**
+ * Get the events list URL.
+ *
  * @return string
  */
 function wooclap_get_events_list_url() {
@@ -157,6 +175,8 @@ function wooclap_get_events_list_url() {
 }
 
 /**
+ * Get the ping URL.
+ *
  * @return string
  */
 function wooclap_get_ping_url() {
@@ -166,6 +186,8 @@ function wooclap_get_ping_url() {
 }
 
 /**
+ * Get the rename event URL.
+ *
  * @return string
  */
 function wooclap_get_rename_url() {
@@ -175,7 +197,9 @@ function wooclap_get_rename_url() {
 }
 
 /**
- * @param $data
+ * Generate a token based on the data and the secret access key.
+ *
+ * @param  string $data Data to be hashed.
  * @return string
  * @throws Exception
  */
@@ -184,7 +208,9 @@ function wooclap_generate_token($data) {
 }
 
 /**
- * @param $data
+ * Build a query string from an array.
+ *
+ * @param  array|object $data May be an array or object containing properties.
  * @return string
  */
 function wooclap_http_build_query($data) {
@@ -192,10 +218,12 @@ function wooclap_http_build_query($data) {
 }
 
 /**
- * @param int $courseid
- * @param int $cmid
- * @param int $userid
- * @return bool
+ * Check if the user has access to the activity.
+ *
+ * @param  int $courseid The course id
+ * @param  int $cmid The course module id.
+ * @param  int $userid The user id.
+ * @return bool Whether the user has access to the activity or not.
  * @throws moodle_exception
  */
 function wooclap_check_activity_user_access($courseid, $cmid, $userid) {
@@ -213,7 +241,11 @@ function wooclap_check_activity_user_access($courseid, $cmid, $userid) {
 }
 
 /**
- * @param $userid
+ * Redirect the user to the Wooclap platform.
+ *
+ * @param int $userid The user id.
+ * @return void
+ * @throws dml_exception
  * @throws moodle_exception
  */
 function wooclap_redirect_auth($userid) {
@@ -278,6 +310,12 @@ function wooclap_redirect_auth($userid) {
 }
 
 /**
+ * Ask for consent if not given.
+ *
+ * @param string $redirecturl The URL to redirect to after the consent screen.
+ * @param string $role The role of the user.
+ * @return void
+ * @throws dml_exception
  * @throws moodle_exception
  */
 function wooclap_ask_consent_if_not_given($redirecturl = null, $role = null) {
@@ -304,6 +342,7 @@ function wooclap_ask_consent_if_not_given($redirecturl = null, $role = null) {
 
 /**
  * Perform a PING with the Wooclap server based on the plugin settings
+ *
  * @throws moodle_exception
  * @return bool true if the current settings are accepted by Wooclap
  */
@@ -354,7 +393,9 @@ function wooclap_get_ping_status() {
 }
 
 /**
- * @param $course_context
+ * Get the role of the user in the course
+ *
+ * @param  context_course $coursecontext The course context
  * @return string
  */
 function wooclap_get_role($coursecontext) {
@@ -367,8 +408,11 @@ function wooclap_get_role($coursecontext) {
 }
 
 /**
- * @param string $callback_url
- * @return string
+ * Validate the callback URL.
+ *
+ * @param string $callbackurl The callback URL to validate
+ * @return mixed|string
+ * @throws moodle_exception
  */
 function wooclap_validate_callback_url($callbackurl) {
     if (strpos($callbackurl, 'https://') === false) {
@@ -381,10 +425,12 @@ function wooclap_validate_callback_url($callbackurl) {
 }
 
 /**
- * @param $wooclap the wooclap activity.
- * @param $userid
- * @param $gradeval
- * @param $completionstatus
+ * Update a wooclap grade.
+ *
+ * @param object $wooclap The wooclap activity.
+ * @param int $userid The user id.
+ * @param float $gradeval The grade value.
+ * @param int $completionstatus The completion status.
  * @return bool
  * @throws dml_exception
  */
@@ -463,6 +509,8 @@ function wooclap_update_grade($wooclap, $userid, $gradeval, $completionstatus) {
 }
 
 /**
+ * Get the current time in ISO format.
+ *
  * @return string
  */
 function wooclap_get_isotime() {
@@ -471,18 +519,21 @@ function wooclap_get_isotime() {
 }
 
 /**
+ * Show the Wooclap iframe.
+ *
  * @param string $src The Wooclap link will be shown inside the iframe block
- * @param bool $noHtmlBlock If true, it will show the content without the HTML
- * block. Only the iframe. This value is usually defined as true by the
- * observer.php:course_module_created method.
+ * @param bool $nohtmlblock If true, it will show the content without the HTML
+ *  block. Only the iframe. This value is usually defined as true by the
+ *  observer.php:course_module_created method.
  *
- * We have noticed that in some Moodle instances (e.g our Bitnami staging
- * environment), the teacher is not redirected to the activity URL when clicking
- * on "Save and display". Instead, they stay on "/course/modedit.php" and the
- * iframe is injected onto that page.
+ *  We have noticed that in some Moodle instances (e.g our Bitnami staging
+ *  environment), the teacher is not redirected to the activity URL when clicking
+ *  on "Save and display". Instead, they stay on "/course/modedit.php" and the
+ *  iframe is injected onto that page.
  *
- * To avoid having multiple <html /> element on the page, we have to add this
- * parameter.
+ *  To avoid having multiple <html /> element on the page, we have to add this
+ *  parameter.
+ * @return void
  */
 function wooclap_frame_view($src, $nohtmlblock=false) {
 
@@ -513,10 +564,13 @@ function wooclap_frame_view($src, $nohtmlblock=false) {
 }
 
 /**
- * @param $course
- * @param $cm
- * @param $userid
- * @param $type boolean COMPLETION_AND (true) or COMPLETION_OR (false)
+ * Obtains the automatic completion state for this quizgame based on any conditions
+ * in quizgame settings.
+ *
+ * @param object $course Course
+ * @param object $cm Course-module
+ * @param int $userid User ID
+ * @param bool $type COMPLETION_AND (true) or COMPLETION_OR (false)
  * - COMPLETION_AND: if multiple conditions are selected, the user must meet all of them.
  * - COMPLETION_OR: if multiple conditions are selected, any one of them is good enough to complete the activity.
  * @return bool - whether the user has completed the activity or not.
@@ -525,12 +579,12 @@ function wooclap_frame_view($src, $nohtmlblock=false) {
 function wooclap_get_completion_state($course, $cm, $userid, $type) {
     global $DB;
 
-    $wooclap = $DB->get_record('wooclap', array('id' => $cm->instance), '*', MUST_EXIST);
+    $wooclap = $DB->get_record('wooclap', ['id' => $cm->instance], '*', MUST_EXIST);
 
     if ($wooclap->customcompletion) {
         // Find the completion record for this user and this activity.
         // Any grade means they participated, so they get activity completion.
-        return $DB->record_exists('wooclap_completion', array('wooclapid' => $wooclap->id, 'userid' => $userid));
+        return $DB->record_exists('wooclap_completion', ['wooclapid' => $wooclap->id, 'userid' => $userid]);
     }
 
     return $type;
@@ -539,8 +593,8 @@ function wooclap_get_completion_state($course, $cm, $userid, $type) {
 /**
  * Create/update grade item for given wooclap activity
  *
- * @param $wooclap the wooclap activity.
- * @param null $grades
+ * @param object $wooclap The wooclap activity.
+ * @param mixed $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int
  */
 function wooclap_grade_item_update($wooclap, $grades = null) {
@@ -553,7 +607,7 @@ function wooclap_grade_item_update($wooclap, $grades = null) {
         $wooclap->courseid = $wooclap->course;
     }
 
-    $params = array('itemname' => $wooclap->name);
+    $params = ['itemname' => $wooclap->name];
 
     if ($wooclap->grade > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
@@ -590,7 +644,7 @@ function wooclap_grade_item_update($wooclap, $grades = null) {
  * Given a course_module object, this function returns any "extra" information that may be needed
  * when printing this activity in a course listing.  See get_array_of_activities() in course/lib.php.
  *
- * @param stdClass $coursemodule The coursemodule object (record).
+ * @param  stdClass $coursemodule The coursemodule object (record).
  * @return cached_cm_info An object on information that the courses
  *                        will know about (most noticeably, an icon).
  *
@@ -621,12 +675,12 @@ function wooclap_get_coursemodule_info($coursemodule) {
 }
 
 /**
- * Get questions from database shema before the Moodle V4 version
+ * Get questions from database schema before the Moodle V4 version
  * Warning: From V4 version, questions table structure has changed
  *
- * @param $quiz_id Quiz Id
- *
+ * @param int $quizid The quiz id
  * @return array List of questions from a quiz
+ * @throws dml_exception
  */
 function wooclap_load_questions_before_v4($quizid) {
     global $DB;
@@ -647,12 +701,12 @@ function wooclap_load_questions_before_v4($quizid) {
 }
 
 /**
- * Get questions from database shema after the Moodle V4 version
+ * Get questions from database schema after the Moodle V4 version
  * Warning: From V4 version, questions table structure has changed
  *
- * @param $quiz_id Quiz Id
- *
+ * @param int $quizid The quiz id
  * @return array List of questions from a quiz
+ * @throws dml_exception
  */
 function wooclap_load_questions_for_v4($quizid) {
     global $DB;
@@ -692,7 +746,11 @@ function wooclap_load_questions_for_v4($quizid) {
 /**
  * Function to read all questions for quiz into big array
  *
- * @param int $quiz quiz id
+ * @param int $quiz The quiz id
+ * @param bool $export Whether to export the questions or not
+ * @return array
+ * @throws coding_exception
+ * @throws dml_exception
  */
 function wooclap_get_questions_quiz($quiz, $export = true) {
 
@@ -709,7 +767,7 @@ function wooclap_get_questions_quiz($quiz, $export = true) {
     }
 
     // Iterate through questions, getting stuff we need.
-    $qresults = array();
+    $qresults = [];
 
     foreach ($questions as $key => $question) {
         $question->export_process = $export;
@@ -727,7 +785,8 @@ function wooclap_get_questions_quiz($quiz, $export = true) {
 
 /**
  * Check if the callback url is safe and known
- * @param string $callbackUrl
+ *
+ * @param  string $callbackurl The callback url to check
  * @return bool
  */
 function wooclap_is_valid_callback_url($callbackurl) {

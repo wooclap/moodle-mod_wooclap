@@ -17,8 +17,9 @@
 /**
  * Endpoint to rename a Moodle activity.
  *
- * @package    mod_wooclap
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package mod_wooclap
+ * @copyright 2024 Wooclap
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // No login check is expected here because this script is called from wooclap
@@ -52,14 +53,14 @@ try {
 
     // Get the activity from the database.
     $cm = get_coursemodule_from_id('wooclap', $cmid, 0, false, MUST_EXIST);
-    $instance = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
+    $instance = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
 
     // Update the activity name.
     $instance->name = $name;
     $DB->update_record($cm->modname, $instance);
 
     // Also update the name in the grade book, if it exists.
-    $gradeitem = $DB->get_record('grade_items', array('iteminstance' => $cm->instance, 'itemmodule' => $cm->modname), '*', MUST_EXIST);
+    $gradeitem = $DB->get_record('grade_items', ['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname], '*', MUST_EXIST);
     if ($gradeitem) {
         $gradeitem->itemname = $name;
         $DB->update_record('grade_items', $gradeitem);

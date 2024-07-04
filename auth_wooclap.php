@@ -18,9 +18,9 @@
  * User Authentication endpoint
  * Any user can access this script to authenticate themselves.
  *
- * @package    mod_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // No login check is expected here because this script checks the login itself.
@@ -64,7 +64,8 @@ try {
         ];
 
         // Cannot use new moodle_url because of http_build_query RFC constant.
-        $SESSION->wooclap_wantsurl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?' . wooclap_http_build_query($data);
+        $SESSION->wooclap_wantsurl = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?' .
+            wooclap_http_build_query($data);
 
         redirect($CFG->wwwroot . '/login/index.php');
     } else {

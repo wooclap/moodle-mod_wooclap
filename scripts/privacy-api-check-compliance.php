@@ -14,15 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Helper utility to check for compliance of all plugins.
+ *
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ */
+
 // How to use this script?
 // https://docs.moodle.org/dev/Privacy_API/Utilities .
 
 define('CLI_SCRIPT', true);
+require(__DIR__.'/../../../config.php');
 
 // Set this if you want to run the script for one component only. Otherwise leave empty.
 $checkcomponent = '';
-
-require_once('config.php');
 
 $user = \core_user::get_user(2);
 
@@ -110,6 +117,14 @@ foreach ($list->good as $component) {
 
 echo "\n\n== Done ==\n";
 
+/**
+ * Completion and grade update endpoint
+ *
+ * @param string $component
+ * @param string $interface
+ * @return mixed
+ * @throws ReflectionException
+ */
 function check_implements($component, $interface) {
     $manager = new \core_privacy\manager();
     $rc = new \ReflectionClass(\core_privacy\manager::class);

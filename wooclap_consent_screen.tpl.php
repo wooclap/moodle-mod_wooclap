@@ -14,6 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Consent screen
+ *
+ * @package   mod_wooclap
+ * @copyright Wooclap SA 2020
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+// Let codechecker ignore the sniff for this file for missing docblocks.
+// phpcs:disable moodle.Commenting.MissingDocblock.File
+
 defined('MOODLE_INTERNAL') || die();
 ?>
 
