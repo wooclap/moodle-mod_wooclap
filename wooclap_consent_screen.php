@@ -17,13 +17,15 @@
 /**
  * Consent screen
  *
- * @package    mod_wooclap
- * @copyright  Wooclap SA 2020
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright Wooclap SA 2020
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/wooclap/lib.php');
+
+require_login();
 
 global $SESSION, $USER;
 

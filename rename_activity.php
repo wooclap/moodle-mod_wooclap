@@ -17,8 +17,9 @@
 /**
  * Endpoint to rename a Moodle activity.
  *
- * @package    mod_wooclap
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package mod_wooclap
+ * @copyright 2024 Wooclap
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // No login check is expected here because this script is called from wooclap
