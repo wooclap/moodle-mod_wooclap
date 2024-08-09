@@ -34,6 +34,7 @@ $string['wooclapname'] = 'Nom de l\'activité';
 $string['wooclapintro'] = 'Description de l\'activité';
 $string['modulenamepluralformatted'] = 'Liste des activités Wooclap';
 $string['quiz'] = 'Importer un quiz Moodle';
+$string['importquiz_help'] = 'Tous les types de questions des tests Moodle ne sont pas pris en charge sur Wooclap. Cliquez [ici](https://docs.google.com/spreadsheets/d/1qNfegWe99EBQD2Sv2HEDD2i2cC1OVM-x1H9E2ZWliA4/edit?gid=0#gid=0) pour en savoir plus sur la compatibilité des questions entre les deux plateformes.';
 $string['wooclapeventid'] = 'Dupliquer un événement Wooclap';
 
 // Settings.
@@ -76,6 +77,7 @@ $string['error-couldnotloadevents'] = 'Impossible de charger les événements Wo
 $string['error-couldnotupdatereport'] = 'Impossible de mettre à jour le rapport';
 $string['error-couldnotauth'] = 'Impossible d\'obtenir l\'utilisateur ou le cours durant l\'authentication';
 $string['error-invalidtoken'] = 'Le valeur du paramètre "token" est invalide';
+$string['error-during-quiz-import'] = 'Le test ne peut pas être converti en questions Wooclap car il ne contient que des questions non compatibles avec Wooclap.';
 $string['error-invalidjoinurl'] = 'L\'URL pour rejoindre l\'événement est invalide';
 $string['error-missingparameters'] = 'Paramètres manquants';
 $string['error-reportdeprecated'] = 'report_wooclap.php n\'est plus supporté. Veuiller plutôt utiliser report_wooclap_v3.php.';

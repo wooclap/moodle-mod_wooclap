@@ -77,6 +77,11 @@ class mod_wooclap_mod_form extends moodleform_mod {
             $quizz[$quizdb->id] = $quizdb->name;
         }
         $mform->addElement('select', 'quiz', get_string('quiz', 'wooclap'), $quizz);
+        $mform->addHelpButton(
+            'quiz',
+            'importquiz',
+            'wooclap'
+        );
         $mform->setType('quiz', PARAM_INT);
         if ($quizid > 0) {
             $mform->setDefault('quiz', $quizid);

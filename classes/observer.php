@@ -72,7 +72,7 @@ class mod_wooclap_observer {
      * @throws require_login_exception
      */
     public static function course_module_created(\core\event\course_module_created $event) {
-        global $CFG, $DB, $USER;
+        global $CFG, $DB, $USER, $OUTPUT;
 
         if ($event->other['modulename'] !== 'wooclap') {
             return;
@@ -206,9 +206,10 @@ class mod_wooclap_observer {
         $curlinfo = $curl->info;
 
         if (!$response || !is_array($curlinfo) || $curlinfo['http_code'] !== 200) {
-            echo "Error during CREATEv3 Wooclap API call";
             // If CREATE call ends in error, delete this instance.
             wooclap_delete_instance($event->other['instanceid']);
+
+            \core\notification::error(get_string('error-during-quiz-import', 'wooclap'));
             return;
         }
 

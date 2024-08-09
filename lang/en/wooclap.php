@@ -34,6 +34,7 @@ $string['wooclapname'] = 'Name';
 $string['wooclapintro'] = 'Description';
 $string['modulenamepluralformatted'] = 'List of Wooclap activities';
 $string['quiz'] = 'Import a Moodle quiz';
+$string['importquiz_help'] = 'Not all Moodle Quiz questions are supported on Wooclap. Click [here](https://docs.google.com/spreadsheets/d/1qNfegWe99EBQD2Sv2HEDD2i2cC1OVM-x1H9E2ZWliA4/edit?gid=0#gid=0) to find out more information about the question compatibility between the two platforms.';
 $string['wooclapeventid'] = 'Duplicate a Wooclap event';
 
 // Settings.
@@ -79,6 +80,7 @@ $string['error-couldnotperformv3upgradestep1'] = 'Could not perform Step 1 of th
 $string['error-couldnotperformv3upgradestep2'] = 'Could not perform Step 2 of the V3 Upgrade';
 $string['error-reportdeprecated'] = 'report_wooclap.php is deprecated. Use report_wooclap_v3.php instead.';
 $string['error-invalidtoken'] = 'Invalid token';
+$string['error-during-quiz-import'] = 'The Quiz cannot be converted into Wooclap questions because it only contains questions that are not compatible with Wooclap.';
 $string['error-invalidjoinurl'] = 'Invalid join URL';
 $string['error-missingparameters'] = 'Missing parameters';
 $string['error-invalid-callback-url'] = 'The callback URL provided does not match the baseurl domain name defined in the settings.';
