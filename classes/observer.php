@@ -271,4 +271,60 @@ class mod_wooclap_observer {
             );
         }
     }
+
+    /**
+     * Updates the gradebook item and the Wooclap event when the activity is updated (ex. when name is changed).
+     * @param \core\event\course_module_updated $event
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public static function course_module_updated(\core\event\course_module_updated $event) {
+        global $DB;
+
+        $context = $event->get_context();
+
+        // Get the activity from the database.
+        $cm = get_coursemodule_from_id('wooclap', $event->contextinstanceid, 0, false, MUST_EXIST);
+        $instance = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
+
+        // Update the grade item name.
+        $gradeitem = $DB->get_record('grade_items', array('iteminstance' => $cm->instance, 'itemmodule' => $cm->modname), '*', MUST_EXIST);
+        if ($gradeitem) {
+            $gradeitem->itemname = $instance->name;
+            $DB->update_record('grade_items', $gradeitem);
+        }
+
+        // Update the name within Wooclap
+        self::rename_wooclap_event($instance->linkedwooclapeventslug, $instance->name);
+    }
+
+    private static function rename_wooclap_event($slug, $name) {
+        $data = new StdClass;
+
+        $data->slug = $slug;
+        $data->name = $name;
+        $data->accessKeyId = get_config('wooclap', 'accesskeyid');
+        $data->ts = wooclap_get_isotime();
+        $data->version = get_config('mod_wooclap')->version;
+
+        $data->token = wooclap_generate_token(
+            'RENAME?' . wooclap_http_build_query($data)
+        );
+
+        // Make an HTTP request to the API to request a RENAME.
+        $curl = new wooclap_curl();
+
+        $headers = [];
+        $headers[0] = "Content-Type: application/json";
+        $headers[1] = "X-Wooclap-PluginVersion: " . get_config('mod_wooclap')->version;
+        $curl->setHeader($headers);
+
+        try {
+            $curl->post(wooclap_get_rename_url(), json_encode($data));
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            return;
+        }
+    }
 }

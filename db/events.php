@@ -30,8 +30,13 @@ $observers = [
     [
         'eventname' => '\core\event\user_loggedin',
         'callback' => 'mod_wooclap_observer::user_loggedin',
-    ], [
+    ],
+    [
         'eventname' => '\core\event\course_module_created',
         'callback' => 'mod_wooclap_observer::course_module_created',
+    ],
+    [
+        'eventname' => '\core\event\course_module_updated',
+        'callback' => 'mod_wooclap_observer::course_module_updated',
     ],
 ];

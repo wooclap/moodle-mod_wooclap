@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-//
 
 /**
  * This file contains a library of functions and constants for the wooclap module
@@ -164,6 +163,15 @@ function wooclap_get_ping_url() {
     $baseurl = get_config('wooclap', 'baseurl');
     $hastrailingslash = substr($baseurl, -1) === '/';
     return $baseurl . ($hastrailingslash ? '' : '/') . 'api/moodle/v3/ping';
+}
+
+/**
+ * @return string
+ */
+function wooclap_get_rename_url() {
+    $baseurl = get_config('wooclap', 'baseurl');
+    $hastrailingslash = substr($baseurl, -1) === '/';
+    return $baseurl . ($hastrailingslash ? '' : '/') . 'api/integration/moodle-plugin/rename-event';
 }
 
 /**

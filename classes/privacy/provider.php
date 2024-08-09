@@ -36,13 +36,22 @@ require_once($CFG->libdir . '/filelib.php');
 // So we polyfill it.
 
 if (interface_exists('\core_privacy\local\request\userlist')) {
+    /**
+     * Interface for Wooclap UserList, extending core_privacy's UserList.
+     */
     interface wooclap_userlist extends \core_privacy\local\request\userlist {
     }
 } else {
+    /**
+     * Interface for Wooclap UserList
+     */
     interface wooclap_userlist {
     };
 }
 
+/**
+ * Provider class for userlist.
+ */
 class provider implements
         \core_privacy\local\metadata\provider,
         wooclap_userlist,
