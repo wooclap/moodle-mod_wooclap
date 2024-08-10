@@ -17,19 +17,26 @@
 /**
  * Export wooclap quiz as Moodle XML.
  *
- * @package    qformat_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/format/xml/format.php');
 
+/**
+ * Class to represent a wooclap file.
+ */
 class qformat_wooclap extends qformat_xml {
+
     /**
      * Do the export
-     * @return mixed|stored_file|string
+     *
+     * @param bool $checkcapabilities Whether to check capabilities.
+     * @return string The exported data.
+     * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
      */

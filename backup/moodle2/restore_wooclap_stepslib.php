@@ -15,21 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Structure step to restore a wooclap activity.
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once(__DIR__ . '/../../../../config.php');
 
 /**
  * Structure step to restore one wooclap activity
  */
 class restore_wooclap_activity_structure_step extends restore_activity_structure_step {
 
+    /**
+     * DB structure for a wooclap.
+     */
     protected function define_structure() {
 
-        $paths = array();
+        $paths = [];
         $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('wooclap', '/activity/wooclap');
@@ -41,6 +44,10 @@ class restore_wooclap_activity_structure_step extends restore_activity_structure
         return $this->prepare_activity_structure($paths);
     }
 
+    /**
+     * Function to restore the wooclap activity
+     * @param StdClass $data
+     */
     protected function process_wooclap($data) {
         global $DB;
 
@@ -53,6 +60,14 @@ class restore_wooclap_activity_structure_step extends restore_activity_structure
         $this->apply_activity_instance($newitemid);
     }
 
+    /**
+     * After restore, process wooclap completion.
+     *
+     * @param object $data The completion data.
+     * @return void
+     * @throws dml_exception
+     * @throws restore_step_exception
+     */
     protected function process_wooclap_completion($data) {
         global $DB;
 
@@ -65,6 +80,9 @@ class restore_wooclap_activity_structure_step extends restore_activity_structure
         $this->set_mapping('wooclap_completion', $oldid, $newitemid);
     }
 
+    /**
+     * After restore hook, process file attachments.
+     */
     protected function after_execute() {
         // Add choice related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_wooclap', 'intro', null);

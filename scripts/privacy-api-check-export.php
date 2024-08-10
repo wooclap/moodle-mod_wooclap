@@ -18,14 +18,15 @@
  * Helper utility to perform a test export.
  *
  * @copyright 2018 Andrew Nicols <andrew@nicols.co.uk>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
  */
 
 // How to use this script?
 // https://docs.moodle.org/dev/Privacy_API/Utilities .
 
 define('CLI_SCRIPT', true);
-require_once('config.php');
+require(__DIR__.'/../../../config.php');
 require_once("$CFG->libdir/clilib.php");
 
 list($options, $unrecognized) = cli_get_params(
