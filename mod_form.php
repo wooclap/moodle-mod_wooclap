@@ -191,19 +191,8 @@ class mod_wooclap_mod_form extends moodleform_mod {
             'wooclap'
         );
 
-        // By default, enable Wooclap's custom completion.
-        $mform->setDefault('customcompletion', 1);
-
         // Disable custom grade fields if completion is disabled or manual.
         $mform->disabledIf('customcompletion', 'completion', 'in', [0, 1]);
-
-        // Disable the grade fields if the custom completion checkbox is checked.
-        $mform->disabledIf('completionusegrade', 'customcompletion', 'checked');
-        $mform->disabledIf('completionpassgrade', 'customcompletion', 'checked');
-
-        // Disable the custom completion checkbox if any grade fields are checked.
-        $mform->disabledIf('customcompletion', 'completionusegrade', 'checked');
-        $mform->disabledIf('customcompletion', 'completionpassgrade', 'checked');
 
         return ['customcompletiongroup_wooclap'];
     }
@@ -225,32 +214,5 @@ class mod_wooclap_mod_form extends moodleform_mod {
      */
     public function completion_rule_enabled($data) {
         return ($data['customcompletion'] != 0);
-    }
-
-    /**
-     * Determines which options are enabled by default when creating an activity.
-     * Also called when editing an activity's settings.
-     * @param array $default_values
-     */
-    public function data_preprocessing(&$defaultvalues) {
-        parent::data_preprocessing($defaultvalues);
-
-        // Completion tracking:
-        // 0: do not indicate activity completion.
-        // 1: students can mark the activity as completed.
-        // 2: show activity as complete when conditions are met.
-        //
-        // We only set the value if we are creating a new activity.
-        // Otherwise, we keep the option selected by the user.
-        if (isset($defaultvalues['add'])) {
-            $defaultvalues['completion'] = 2;
-        }
-
-        // Only set the default custom completion setting if completionusegrade is not set.
-        if (empty($defaultvalues['completionusegrade'])) {
-            $defaultvalues['customcompletion'] = 1;
-        } else {
-            $defaultvalues['customcompletion'] = 0;
-        }
     }
 }
