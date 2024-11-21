@@ -285,22 +285,24 @@ class mod_wooclap_observer {
     public static function course_module_updated(\core\event\course_module_updated $event) {
         global $DB;
 
-        $context = $event->get_context();
+        if ($event->get_data()['other']['modulename'] == 'wooclap') {
+            $context = $event->get_context();
 
-        // Get the activity from the database.
-        $cm = get_coursemodule_from_id('wooclap', $event->contextinstanceid, 0, false, MUST_EXIST);
-        $instance = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
+            // Get the activity from the database.
+            $cm = get_coursemodule_from_id('wooclap', $event->contextinstanceid, 0, false, MUST_EXIST);
+            $instance = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
 
-        // Update the grade item name.
-        $gradeitem = $DB->get_record('grade_items', ['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname], '*',
-            MUST_EXIST);
-        if ($gradeitem) {
-            $gradeitem->itemname = $instance->name;
-            $DB->update_record('grade_items', $gradeitem);
+            // Update the grade item name.
+            $gradeitem = $DB->get_record('grade_items', ['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname], '*',
+                MUST_EXIST);
+            if ($gradeitem) {
+                $gradeitem->itemname = $instance->name;
+                $DB->update_record('grade_items', $gradeitem);
+            }
+
+            // Update the name within Wooclap.
+            self::rename_wooclap_event($instance->linkedwooclapeventslug, $instance->name);
         }
-
-        // Update the name within Wooclap.
-        self::rename_wooclap_event($instance->linkedwooclapeventslug, $instance->name);
     }
 
     /**
