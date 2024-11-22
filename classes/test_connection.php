@@ -21,25 +21,30 @@ require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 /**
  * 'Test connection' button in the Settings page
  *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_wooclap_test_connection extends admin_setting_heading {
 
     /**
      * Returns an HTML string
      *
-     * @param string $data
-     * @param string $query
+     * @param  string $data
+     * @param  string $query
      * @return string Returns an HTML string
      */
     public function output_html($data, $query = '') {
         $ispingok = wooclap_get_ping_status();
 
         if ($ispingok) {
-            return '<div role="alert" style="color: #306030; background-color: #def1de; padding: .75rem 1.25rem; margin-bottom: 1rem;">' .
+            return '<div role="alert" style="color: #306030; background-color: #def1de; padding: .75rem 1.25rem; ' .
+                'margin-bottom: 1rem;">' .
             get_string('pingOK', 'wooclap') .
             '</div>';
         } else {
-            return '<div role="alert" style="color: #712b29; background-color: #f7dddc; padding: .75rem 1.25rem; margin-bottom: 1rem;">' .
+            return '<div role="alert" style="color: #712b29; background-color: #f7dddc; padding: .75rem 1.25rem; ' .
+                'margin-bottom: 1rem;">' .
             get_string('pingNOTOK', 'wooclap') .
             '</div>';
         }
