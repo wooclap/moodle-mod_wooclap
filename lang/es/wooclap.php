@@ -57,9 +57,9 @@ $string['customcompletiongroup'] = 'Condiciones de seguimiento de finalización 
 
 // Pantalla de consentimiento.
 $string['consent-screen:description'] = '<b>Wooclap</b> convierte a los estudiantes en protagonistas de su aprendizaje.';
-$string['consent-screen:explanation'] = 'Para el correcto funcionamiento de algunas operaciones, como el envío de un informe personalizado al final de una sesión, Wooclap solicita tu dirección de correo electrónico. Nunca se utilizará con fines de marketing. Haz clic en "Acepto" para compartir tu dirección de correo electrónico con Wooclap, o en "Rechazo" para continuar sin las funciones avanzadas.';
-$string['consent-screen:agree'] = 'Acepto';
-$string['consent-screen:disagree'] = 'Rechazo';
+$string['consent-screen:explanation'] = 'Para que algunas funciones puedan funcionar, como el envío de un informe personalizado al final de una sesión, Wooclap solicita tu dirección de correo electrónico. Nunca será utilizada con fines de marketing. Haz clic en "Estoy de acuerdo" para compartir tu dirección de correo electrónico con Wooclap, o en "No estoy de acuerdo" para continuar sin las funciones adicionales.';
+$string['consent-screen:agree'] = 'Estoy de acuerdo';
+$string['consent-screen:disagree'] = 'No estoy de acuerdo';
 
 // Capacidades.
 $string['wooclap:view'] = 'Acceder a una actividad Wooclap';
