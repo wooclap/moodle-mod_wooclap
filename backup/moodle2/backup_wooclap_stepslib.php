@@ -15,12 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Define the complete wooclap structure for backup, with file and id annotations
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once(__DIR__ . '/../../../../config.php');
 
 /**
  * Define all the backup steps that will be used by the backup_wooclap_activity_task
@@ -31,35 +31,40 @@ require_once(__DIR__ . '/../../../../config.php');
  */
 class backup_wooclap_activity_structure_step extends backup_activity_structure_step {
 
+    /**
+     * Define the complete wooclap structure for backup, with file and id annotations.
+     *
+     * @return object
+     */
     protected function define_structure() {
 
         // To know if we are including userinfo.
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $wooclap = new backup_nested_element('wooclap', array('id'), array(
+        $wooclap = new backup_nested_element('wooclap', ['id'], [
             /*"course",*/"name", "intro",
             "introformat", "editurl", "quiz",
             "authorid", "customcompletion", "timecreated",
             "timemodified", "wooclapeventid",
             "linkedwooclapeventslug", "grade",
-        ));
+        ]);
 
         $completions = new backup_nested_element('completions');
 
-        $completion = new backup_nested_element('completion', array('id'), array(
-            "wooclapid", "userid", "completionstatus", "grade", "timecreated", "timemodified"));
+        $completion = new backup_nested_element('completion', ['id'], [
+            "wooclapid", "userid", "completionstatus", "grade", "timecreated", "timemodified"]);
 
         // Build the tree.
         $wooclap->add_child($completions);
         $completions->add_child($completion);
 
         // Define sources.
-        $wooclap->set_source_table('wooclap', array('id' => backup::VAR_ACTIVITYID));
+        $wooclap->set_source_table('wooclap', ['id' => backup::VAR_ACTIVITYID]);
 
         // All the rest of elements only happen if we are including user info.
         if ($userinfo) {
-            $completion->set_source_table('wooclap_completion', array('wooclapid' => backup::VAR_PARENTID));
+            $completion->set_source_table('wooclap_completion', ['wooclapid' => backup::VAR_PARENTID]);
         }
 
         // Define id annotations.

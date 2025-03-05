@@ -14,10 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// Let codechecker ignore the sniff for this file for duplicate class names.
+// phpcs:disable Generic.Classes.DuplicateClassName.Found
+
 /**
- * @package    mod_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Privacy Subsystem implementation for mod_wooclap.
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_wooclap\privacy;
@@ -60,7 +65,7 @@ class provider implements
     /**
      * Return the fields which contain personal data.
      *
-     * @param collection $items a reference to the collection to use to store the metadata.
+     * @param  collection $collection a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
     public static function get_metadata(collection $collection): collection {
@@ -75,7 +80,7 @@ class provider implements
     /**
      * Get the list of contexts that contain user information for the specified user.
      *
-     * @param int $userid the userid.
+     * @param  int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
@@ -231,7 +236,7 @@ class provider implements
     /**
      * Delete multiple users within a single context.
      *
-     * @param   approved_userlist       $userlist The approved context and user information to delete information for.
+     * @param approved_userlist       $userlist The approved context and user information to delete information for.
      */
     public static function delete_data_for_users(approved_userlist $userlist) {
         debugging('The Wooclap plugin does not currently support the deleting of user data. ', DEBUG_DEVELOPER);

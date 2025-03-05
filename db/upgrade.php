@@ -14,14 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// More info: https://docs.moodle.org/dev/Upgrade_API .
+/**
+ * This file keeps track of upgrades to the quizgame module
+ *
+ * Sometimes, changes between versions involve alterations to database
+ * structures and other major things that may break installations. The upgrade
+ * function in this file will attempt to perform all the necessary actions to
+ * upgrade your older installation to the current version. If there's something
+ * it cannot do itself, it will tell you what you need to do.  The commands in
+ * here will all be database-neutral, using the functions defined in DLL libraries.
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ .  '/../locallib.php');
 
 /**
- * Runs the required migrations given the previous "oldversion".
+ *  Runs the required migrations given the previous "oldversion".
+ *
+ * @param string $oldversion The version we are upgrading from.
+ * @return true
+ * @throws coding_exception
+ * @throws ddl_exception
+ * @throws ddl_table_missing_exception
+ * @throws dml_exception
+ * @throws moodle_exception
  */
 function xmldb_wooclap_upgrade($oldversion) {
     global $CFG, $DB, $OUTPUT;

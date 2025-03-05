@@ -15,9 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Helper class for CURL GET requests.
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -31,9 +33,9 @@ class wooclap_curl extends curl {
     /**
      * HTTP GET method override for PHP_QUERY_RFC3986
      *
-     * @param string $url
-     * @param array $params
-     * @param array $options
+     * @param  string $url
+     * @param  array $params
+     * @param  array $options
      * @return bool
      */
     public function get($url, $params = [], $options = []) {

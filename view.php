@@ -15,9 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Prints a particular instance of wooclap
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . '/../../config.php');
@@ -47,10 +49,10 @@ if (is_object($cm) && is_object($wooclap)) {
     require_capability('mod/wooclap:view', $context);
 
     // Add event management here.
-    $event = \mod_wooclap\event\course_module_viewed::create(array(
+    $event = \mod_wooclap\event\course_module_viewed::create([
         'objectid' => $wooclap->id,
         'context' => $context,
-    ));
+    ]);
     $event->add_record_snapshot('course', $PAGE->course);
     $event->add_record_snapshot($cm->modname, $wooclap);
     $event->trigger();
