@@ -484,7 +484,7 @@ function wooclap_get_isotime() {
  * To avoid having multiple <html /> element on the page, we have to add this
  * parameter.
  */
-function wooclap_frame_view($src, $nohtmlblock=false) {
+function wooclap_frame_view($src, $nohtmlblock = false) {
 
     $iframe = '<iframe
             id="contentframe"
@@ -525,12 +525,12 @@ function wooclap_frame_view($src, $nohtmlblock=false) {
 function wooclap_get_completion_state($course, $cm, $userid, $type) {
     global $DB;
 
-    $wooclap = $DB->get_record('wooclap', array('id' => $cm->instance), '*', MUST_EXIST);
+    $wooclap = $DB->get_record('wooclap', ['id' => $cm->instance], '*', MUST_EXIST);
 
     if ($wooclap->customcompletion) {
         // Find the completion record for this user and this activity.
         // Any grade means they participated, so they get activity completion.
-        return $DB->record_exists('wooclap_completion', array('wooclapid' => $wooclap->id, 'userid' => $userid));
+        return $DB->record_exists('wooclap_completion', ['wooclapid' => $wooclap->id, 'userid' => $userid]);
     }
 
     return $type;
@@ -553,7 +553,7 @@ function wooclap_grade_item_update($wooclap, $grades = null) {
         $wooclap->courseid = $wooclap->course;
     }
 
-    $params = array('itemname' => $wooclap->name);
+    $params = ['itemname' => $wooclap->name];
 
     if ($wooclap->grade > 0) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
@@ -657,35 +657,35 @@ function wooclap_load_questions_before_v4($quizid) {
 function wooclap_load_questions_for_v4($quizid) {
     global $DB;
 
-    $questions = $DB->get_records_sql('
-                        SELECT
-                            q.*,
-                            qbe.questioncategoryid AS category
-                        FROM
-                            {quiz_slots} qs
-                                INNER JOIN {question_references} qr
-                                    ON  qs.id = qr.itemid
-                                    AND qr.component = :component
-                                    AND qr.questionarea = :questionarea
-                                INNER JOIN {question_bank_entries} qbe
-                                    ON qr.questionbankentryid = qbe.id
-                                INNER JOIN {question_versions} qv
-                                    ON qbe.id = qv.questionbankentryid
-                                    AND qv.version  = (
-                                                        SELECT MAX(version)
-                                                        FROM {question_versions}
-                                                        WHERE  questionbankentryid = qv.questionbankentryid
-                                                    )
-                                INNER JOIN {question} q
-                                    ON qv.questionid = q.id
-                        WHERE
-                            qs.quizid = :quizid',
-                        [
-                            'component' => 'mod_quiz',
-                            'questionarea' => 'slot',
-                            'quizid' => $quizid,
-                        ]
-                    );
+    $questions = $DB->get_records_sql(
+        'SELECT
+            q.*,
+            qbe.questioncategoryid AS category
+        FROM
+            {quiz_slots} qs
+                INNER JOIN {question_references} qr
+                    ON  qs.id = qr.itemid
+                    AND qr.component = :component
+                    AND qr.questionarea = :questionarea
+                INNER JOIN {question_bank_entries} qbe
+                    ON qr.questionbankentryid = qbe.id
+                INNER JOIN {question_versions} qv
+                    ON qbe.id = qv.questionbankentryid
+                    AND qv.version  = (
+                                        SELECT MAX(version)
+                                        FROM {question_versions}
+                                        WHERE  questionbankentryid = qv.questionbankentryid
+                                    )
+                INNER JOIN {question} q
+                    ON qv.questionid = q.id
+        WHERE
+            qs.quizid = :quizid',
+        [
+            'component' => 'mod_quiz',
+            'questionarea' => 'slot',
+            'quizid' => $quizid,
+        ]
+    );
     return $questions;
 }
 
@@ -709,7 +709,7 @@ function wooclap_get_questions_quiz($quiz, $export = true) {
     }
 
     // Iterate through questions, getting stuff we need.
-    $qresults = array();
+    $qresults = [];
 
     foreach ($questions as $key => $question) {
         $question->export_process = $export;

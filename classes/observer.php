@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/lib/datalib.php');
  * Event observer for mod_wooclap.
  */
 class mod_wooclap_observer {
-
     /**
      * Handler for user_loggedin
      * If a redirect parameter is set in the SESSION, redirect the user to
@@ -45,9 +44,11 @@ class mod_wooclap_observer {
     public static function user_loggedin(\core\event\user_loggedin $event) {
         global $CFG, $SESSION;
 
-        if (isset($SESSION->wooclap_callback)
+        if (
+            isset($SESSION->wooclap_callback)
             && isset($SESSION->wooclap_courseid)
-            && isset($SESSION->wooclap_cmid)) {
+            && isset($SESSION->wooclap_cmid)
+        ) {
             try {
                 wooclap_redirect_auth($event->userid);
             } catch (Exception $e) {
@@ -160,7 +161,7 @@ class mod_wooclap_observer {
             'version' => get_config('mod_wooclap')->version,
         ];
 
-        $curldata = new StdClass;
+        $curldata = new StdClass();
         $curldata->name = $wooclap->name;
 
         $curldata->description = isset($wooclap->intro)
@@ -282,14 +283,17 @@ class mod_wooclap_observer {
     public static function course_module_updated(\core\event\course_module_updated $event) {
         global $DB;
 
-        $context = $event->get_context();
+        // Only process wooclap modules.
+        if ($event->other['modulename'] !== 'wooclap') {
+            return;
+        }
 
         // Get the activity from the database.
         $cm = get_coursemodule_from_id('wooclap', $event->contextinstanceid, 0, false, MUST_EXIST);
-        $instance = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
+        $instance = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
 
         // Update the grade item name.
-        $gradeitem = $DB->get_record('grade_items', array('iteminstance' => $cm->instance, 'itemmodule' => $cm->modname), '*', MUST_EXIST);
+        $gradeitem = $DB->get_record('grade_items', ['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname], '*', MUST_EXIST);
         if ($gradeitem) {
             $gradeitem->itemname = $instance->name;
             $DB->update_record('grade_items', $gradeitem);
@@ -300,7 +304,7 @@ class mod_wooclap_observer {
     }
 
     private static function rename_wooclap_event($slug, $name) {
-        $data = new StdClass;
+        $data = new StdClass();
 
         $data->slug = $slug;
         $data->name = $name;

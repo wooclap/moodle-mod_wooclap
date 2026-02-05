@@ -56,7 +56,7 @@ function mod_wooclap_v3_upgrade() {
         'version' => $version,
     ];
 
-    $curldatastep1 = new StdClass;
+    $curldatastep1 = new StdClass();
     $curldatastep1->accessKeyId = $accesskeyid;
     $curldatastep1->ts = $ts;
     $curldatastep1->token = wooclap_generate_token(
@@ -92,7 +92,7 @@ function mod_wooclap_v3_upgrade() {
             'version' => $version,
         ];
 
-        $curldatastep2 = new StdClass;
+        $curldatastep2 = new StdClass();
         $curldatastep2->accessKeyId = $accesskeyid;
         $curldatastep2->idsToUsernamesMapping = $jsonmapping;
         $curldatastep2->ts = $ts;
@@ -102,7 +102,8 @@ function mod_wooclap_v3_upgrade() {
         $curldatastep2->version = $version;
 
         $response = $curl->post(
-            $v3upgradestep2url, json_encode($curldatastep2, JSON_UNESCAPED_UNICODE)
+            $v3upgradestep2url,
+            json_encode($curldatastep2, JSON_UNESCAPED_UNICODE)
         );
         $curlinfo = $curl->info;
 

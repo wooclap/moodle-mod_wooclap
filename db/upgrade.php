@@ -31,7 +31,6 @@ function xmldb_wooclap_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2018080207) {
-
         $table = new xmldb_table('wooclap');
         $field = new xmldb_field('customcompletion', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1');
 
