@@ -62,5 +62,4 @@ if ($ADMIN->fulltree) {
     if (class_exists('mod_wooclap_test_connection')) {
         $settings->add(new mod_wooclap_test_connection('wooclap/testconnection', get_string('testconnection', 'wooclap'), ''));
     }
-
 }

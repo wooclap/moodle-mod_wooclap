@@ -29,7 +29,6 @@ require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->dirroot . '/mod/wooclap/backup/moodle2/restore_wooclap_stepslib.php'); // Because it exists (must).
 
 class restore_wooclap_activity_task extends restore_activity_task {
-
     /**
      * Define (add) particular settings this activity can have.
      */
@@ -49,9 +48,9 @@ class restore_wooclap_activity_task extends restore_activity_task {
      * Define the contents in the activity that must be processed by the link decoder.
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
 
-        $contents[] = new restore_decode_content('wooclap', array('intro'), 'wooclap');
+        $contents[] = new restore_decode_content('wooclap', ['intro'], 'wooclap');
 
         return $contents;
     }
@@ -60,13 +59,12 @@ class restore_wooclap_activity_task extends restore_activity_task {
      * Define the decoding rules for links belonging to the activity to be executed by the link decoder.
      */
     public static function define_decode_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_decode_rule('WOOCLAPVIEWBYID', '/mod/wooclap/view.php?id=$1', 'course_module');
         $rules[] = new restore_decode_rule('WOOCLAPINDEX', '/mod/wooclap/index.php?id=$1', 'course');
 
         return $rules;
-
     }
 
     /**
@@ -76,7 +74,7 @@ class restore_wooclap_activity_task extends restore_activity_task {
      * of {@link restore_log_rule} objects
      */
     public static function define_restore_log_rules() {
-        $rules = array();
+        $rules = [];
 
         $rules[] = new restore_log_rule('wooclap', 'add', 'view.php?id={course_module}', '{wooclap}');
         $rules[] = new restore_log_rule('wooclap', 'update', 'view.php?id={course_module}', '{wooclap}');
@@ -99,8 +97,7 @@ class restore_wooclap_activity_task extends restore_activity_task {
      * activity level. All them are rules not linked to any module instance (cmid = 0)
      */
     public static function define_restore_log_rules_for_course() {
-        $rules = array();
+        $rules = [];
         return $rules;
     }
-
 }

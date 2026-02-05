@@ -80,7 +80,8 @@ class qformat_wooclap extends qformat_xml {
                 if ($question->category != $trackcategory) {
                     $trackcategory = $question->category;
                     $categoryname = $this->get_category_path(
-                        $trackcategory, $this->contexttofile
+                        $trackcategory,
+                        $this->contexttofile
                     );
 
                     // Create 'dummy' question for category export.

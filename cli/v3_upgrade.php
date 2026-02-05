@@ -51,7 +51,7 @@ list($options, $unrecognised) = cli_get_params([
 ]);
 
 // Print an error if some parameters were not recognized.
-list($options, $unrecognized) = cli_get_params(array('verbose' => false, 'help' => false), array('v' => 'verbose', 'h' => 'help'));
+list($options, $unrecognized) = cli_get_params(['verbose' => false, 'help' => false], ['v' => 'verbose', 'h' => 'help']);
 
 if ($unrecognised) {
     $unrecognised = implode(PHP_EOL . '  ', $unrecognised);
