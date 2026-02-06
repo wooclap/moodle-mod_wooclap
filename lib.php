@@ -381,6 +381,31 @@ function wooclap_validate_callback_url($callbackurl) {
 }
 
 /**
+ * Update mod_wooclap grades in the gradebook.
+ *
+ * Needed by {@link grade_update_mod_grades()}.
+ *
+ * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param int $userid Update grade of specific user only, 0 means all participants.
+ */
+function wooclap_update_grades(stdClass $moduleinstance, int $userid = 0): void {
+    global $CFG;
+    require_once($CFG->libdir . '/gradelib.php');
+    if ($moduleinstance->grade == 0) {
+        wooclap_grade_item_update($moduleinstance);
+    } else if ($grades = wooclap_get_user_grades($moduleinstance, $userid)) {
+        foreach ($grades as $k => $v) {
+            if ($v->rawgrade == -1) {
+                $grades[$k]->rawgrade = null;
+            }
+        }
+        wooclap_grade_item_update($moduleinstance, $grades);
+    } else {
+        wooclap_grade_item_update($moduleinstance);
+    }
+}
+
+/**
  * @param $wooclap the wooclap activity.
  * @param $userid
  * @param $gradeval
