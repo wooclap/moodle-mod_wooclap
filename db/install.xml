@@ -9,17 +9,17 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course Wooclap activity belongs to"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name field for moodle instances"/>
-        <FIELD NAME="intro" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Description of the Wooclap activity"/>
-        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Description of the Wooclap activity"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="editurl" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Remote edition url"/>
         <FIELD NAME="quiz" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="authorid" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="customcompletion" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="0=disabled,1=enabled"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="wooclapeventid" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap ID of the event from which this activity was duplicated (if any)"/>
-        <FIELD NAME="linkedwooclapeventslug" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap slug of the event related to the activity"/>
-        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" UNSIGNED="false" COMMENT="This corresponds to the maximum grading; if it's 0, it means that the activity cannot be graded."/>
+        <FIELD NAME="wooclapeventid" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap ID of the event from which this activity was duplicated (if any)"/>
+        <FIELD NAME="linkedwooclapeventslug" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Wooclap slug of the event related to the activity"/>
+        <FIELD NAME="grade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="100" SEQUENCE="false" COMMENT="This corresponds to the maximum grading; if it's 0, it means that the activity cannot be graded."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
