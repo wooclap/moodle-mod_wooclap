@@ -77,7 +77,7 @@ class mod_wooclap_mod_form extends moodleform_mod {
         foreach ($quizzdb as $quizdb) {
             $quizz[$quizdb->id] = $quizdb->name;
         }
-        $mform->addElement('select', 'quiz', get_string('quiz', 'wooclap'), $quizz);
+        $mform->addElement('select', 'quiz', get_string('importquiz', 'wooclap'), $quizz);
         $mform->addHelpButton(
             'quiz',
             'importquiz',

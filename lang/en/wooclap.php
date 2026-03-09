@@ -32,7 +32,7 @@ $string['pluginadministration'] = 'Wooclap administration';
 $string['wooclapname'] = 'Name';
 $string['wooclapintro'] = 'Description';
 $string['modulenamepluralformatted'] = 'List of Wooclap activities';
-$string['quiz'] = 'Import a Moodle quiz';
+$string['importquiz'] = 'Import a Moodle quiz';
 $string['importquiz_help'] = 'Not all Moodle Quiz questions are supported on Wooclap. Click [here](https://docs.google.com/spreadsheets/d/1qNfegWe99EBQD2Sv2HEDD2i2cC1OVM-x1H9E2ZWliA4/edit?gid=0#gid=0) to find out more information about the question compatibility between the two platforms.';
 $string['wooclapeventid'] = 'Duplicate a Wooclap event';
 
