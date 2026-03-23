@@ -17,3 +17,4 @@ jobs:
     secrets:
       app-id: ${{ secrets.DEVX_APP_ID }}
       app-private-key: ${{ secrets.DEVX_APP_PRIVATE_KEY }}
+
