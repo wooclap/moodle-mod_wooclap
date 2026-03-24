@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: moodle-mod-wooclap
+  description: "Moodle plugin for Wooclap (https://www.wooclap.com/)."
+  annotations:
+    github.com/project-slug: wooclap/moodle-mod_wooclap
+spec:
+  type: other
+  lifecycle: production
+  owner: group:default/developers
