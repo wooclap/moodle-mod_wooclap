@@ -1,0 +1,20 @@
+name: Trivy Security Scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main, master, staging, production]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  trivy:
+    uses: wooclap/devx/.github/workflows/trivy.yml@latest
+    secrets:
+      app-id: ${{ secrets.DEVX_APP_ID }}
+      app-private-key: ${{ secrets.DEVX_APP_PRIVATE_KEY }}
+
