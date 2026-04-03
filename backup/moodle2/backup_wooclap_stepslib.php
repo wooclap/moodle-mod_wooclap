@@ -15,21 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Define the complete wooclap structure for backup, with file and id annotations
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once(__DIR__ . '/../../../../config.php');
 
 /**
  * Define all the backup steps that will be used by the backup_wooclap_activity_task
  */
-
-/**
- * Define the complete wooclap structure for backup, with file and id annotations
- */
 class backup_wooclap_activity_structure_step extends backup_activity_structure_step {
+    /**
+     * Define the complete wooclap structure for backup, with file and id annotations.
+     *
+     * @return object
+     */
     protected function define_structure() {
 
         // To know if we are including userinfo.
