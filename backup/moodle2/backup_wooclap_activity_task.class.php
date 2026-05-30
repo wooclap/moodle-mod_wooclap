@@ -20,9 +20,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../../../config.php');
+defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/wooclap/backup/moodle2/backup_wooclap_stepslib.php'); // Because it exists (must).
+require_once(__DIR__ . '/backup_wooclap_stepslib.php'); // Because it exists (must).
 
 /**
  * wooclap backup task that provides all the settings and steps to perform one

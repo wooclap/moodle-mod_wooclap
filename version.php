@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version = 2026030900;
+$plugin->version = 2026052800;
 $plugin->requires = 2016112900;
-$plugin->supported = [32, 501];
 $plugin->component = 'mod_wooclap';
+$plugin->supported = [400, 502];
