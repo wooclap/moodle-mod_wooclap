@@ -381,6 +381,17 @@ function wooclap_validate_callback_url($callbackurl) {
 }
 
 /**
+ * Update mod_wooclap grades in the gradebook.
+ *
+ * Needed by {@link grade_update_mod_grades()}.
+ *
+ * @param stdClass $moduleinstance Instance object with extra cmidnumber and modname property.
+ * @param int $userid Update grade of specific user only, 0 means all participants.
+ */
+function wooclap_update_grades(stdClass $moduleinstance, int $userid = 0): void {
+}
+
+/**
  * @param $wooclap the wooclap activity.
  * @param $userid
  * @param $gradeval
