@@ -17,10 +17,10 @@
 /**
  * Wooclap event handler definition.
  *
- * @package mod_wooclap
- * @category event
+ * @package   mod_wooclap
+ * @category  event
  * @copyright 2018 CBlue sprl
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;

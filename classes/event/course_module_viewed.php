@@ -17,17 +17,15 @@
 /**
  * Defines the view event.
  *
- * @package    mod_wooclap
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_wooclap\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_wooclap course module viewed event class
- *
- * @package    mod_wooclap
  */
 class course_module_viewed extends \core\event\course_module_viewed {
     /**

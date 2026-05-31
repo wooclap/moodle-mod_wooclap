@@ -17,9 +17,9 @@
 /**
  * Event observers used in Wooclap.
  *
- * @package    mod_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -38,7 +38,7 @@ class mod_wooclap_observer {
      * the correct URL.
      * Otherwise, let the normal auth workflow play out.
      *
-     * @param \core\event\user_loggedin $event
+     * @param  \core\event\user_loggedin $event
      * @throws moodle_exception
      */
     public static function user_loggedin(\core\event\user_loggedin $event) {
@@ -66,7 +66,9 @@ class mod_wooclap_observer {
     }
 
     /**
-     * @param \core\event\course_module_created $event
+     * Observer for \core\event\course_module_created event.
+     *
+     * @param  \core\event\course_module_created $event
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -275,7 +277,8 @@ class mod_wooclap_observer {
 
     /**
      * Updates the gradebook item and the Wooclap event when the activity is updated (ex. when name is changed).
-     * @param \core\event\course_module_updated $event
+     *
+     * @param  \core\event\course_module_updated $event
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -293,16 +296,29 @@ class mod_wooclap_observer {
         $instance = $DB->get_record($cm->modname, ['id' => $cm->instance], '*', MUST_EXIST);
 
         // Update the grade item name.
-        $gradeitem = $DB->get_record('grade_items', ['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname], '*', MUST_EXIST);
+        $gradeitem = $DB->get_record(
+            'grade_items',
+            ['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname],
+            '*',
+            MUST_EXIST
+        );
         if ($gradeitem) {
             $gradeitem->itemname = $instance->name;
             $DB->update_record('grade_items', $gradeitem);
         }
 
-        // Update the name within Wooclap
+        // Update the name within Wooclap.
         self::rename_wooclap_event($instance->linkedwooclapeventslug, $instance->name);
     }
 
+    /**
+     * Handler for renaming a Wooclap event.
+     *
+     * @param string $slug
+     * @param string $name
+     * @return void
+     * @throws dml_exception
+     */
     private static function rename_wooclap_event($slug, $name) {
         $data = new StdClass();
 
