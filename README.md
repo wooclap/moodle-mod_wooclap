@@ -22,7 +22,7 @@ Linting is done using PHP Code Sniffer (phpcs) with a specific moodle standard.
 
 Some links:
 
-- https://github.com/squizlabs/PHP_CodeSniffer
+- https://github.com/PHPCSStandards/PHP_CodeSniffer
 - https://docs.moodle.org/dev/Linting#PHP_.28PHP_CodeSniffer.29 (Linting article on Moodle doc)
 - https://docs.moodle.org/dev/Setting_up_Sublime2 (specific article on setting up Sublime Text for Moodle development)
 
