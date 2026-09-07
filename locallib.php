@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Internal library of functions for module quizgame
+ *
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ */
+
 // More info: https://docs.moodle.org/dev/Upgrade_API.
 
 defined('MOODLE_INTERNAL') || die;
@@ -23,6 +31,7 @@ require_once($CFG->dirroot . '/mod/wooclap/lib.php');
 
 /**
  * Perform v3 upgrade with wooclap server
+ *
  * @throws dml_exception
  * @throws moodle_exception
  * TODO check, if possible, if V3 upgrade already performed on remote Wooclap

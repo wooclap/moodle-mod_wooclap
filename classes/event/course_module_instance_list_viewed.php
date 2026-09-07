@@ -17,14 +17,12 @@
 /**
  * The mod_wooclap instance list viewed event.
  *
- * @package    mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_wooclap\event;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Course module instance list viewed event handling.

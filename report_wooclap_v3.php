@@ -17,9 +17,9 @@
 /**
  * Completion and grade update endpoint
  *
- * @package    mod_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // No login check is expected here because this script is called from wooclap
@@ -49,13 +49,13 @@ $tokencalc = wooclap_generate_token('REPORTv3?' . wooclap_http_build_query($data
 
 if ($token === $tokencalc) {
     if ($completion == 'passed') {
-        // Passed: >50% score
+        // Passed: >50% score.
         $completionparam = COMPLETION_COMPLETE_PASS;
     } else if ($completion == 'incomplete') {
-        // Incomplete: participant hasn't answered all the (correctable) questions
+        // Incomplete: participant hasn't answered all the (correctable) questions.
         $completionparam = COMPLETION_INCOMPLETE;
     } else {
-        // Failed: <50% score
+        // Failed: <50% score.
         $completionparam = COMPLETION_COMPLETE_FAIL;
     }
 

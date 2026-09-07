@@ -17,9 +17,9 @@
 /**
  * Completion and grade update endpoint
  *
- * @package    mod_wooclap
- * @copyright  2018 Cblue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 2018 Cblue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // No login check is expected here because this script is called from wooclap

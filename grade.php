@@ -19,6 +19,8 @@
  * Any logged-in user can access this script, and they are considered as students by default.
  *
  * @package   mod_wooclap
+ * @copyright 2024 Wooclap
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . "/../../config.php");

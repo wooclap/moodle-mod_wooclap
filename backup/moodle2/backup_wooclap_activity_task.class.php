@@ -15,14 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package mod_wooclap
- * @copyright  2018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Restore task for wooclap module.
+ *
+ * @package   mod_wooclap
+ * @copyright 2018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-require_once(__DIR__ . '/backup_wooclap_stepslib.php'); // Because it exists (must).
+defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/mod/wooclap/backup/moodle2/backup_wooclap_stepslib.php'); // Because it exists (must).
 
 /**
  * wooclap backup task that provides all the settings and steps to perform one
@@ -47,6 +48,9 @@ class backup_wooclap_activity_task extends backup_activity_task {
     /**
      * Code the transformations to perform in the activity in
      * order to get transportable (encoded) links
+     *
+     * @param string $content Content to encode
+     * @return array|string|string[]|null
      */
     public static function encode_content_links($content) {
         global $CFG;

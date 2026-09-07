@@ -17,12 +17,16 @@
 /**
  * This file contains en_utf8 translation of the Wooclap module
  *
- * @package mod_wooclap
- * @copyright  20018 CBlue sprl
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   mod_wooclap
+ * @copyright 20018 CBlue sprl
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
+
+// Let codechecker ignore some sniffs for this file as it is perfectly well ordered, just not alphabetically.
+// phpcs:disable moodle.Files.LangFilesOrdering.UnexpectedComment
+// phpcs:disable moodle.Files.LangFilesOrdering.IncorrectOrder
 
 $string['modulename'] = 'Wooclap';
 $string['modulenameplural'] = 'Wooclap';
