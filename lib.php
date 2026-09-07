@@ -741,11 +741,38 @@ function wooclap_get_questions_quiz($quiz, $export = true) {
 }
 
 /**
+ * Check whether a callback URL targets the exact host configured for Wooclap.
+ *
+ * The host is compared strictly (not as a string prefix) and the scheme must be
+ * https. This rejects look-alike hosts such as "api.wooclap.com.evil.com" that
+ * the previous prefix check accepted, which allowed the Moodle token to be sent
+ * to an attacker-controlled host (SEC-965).
+ *
+ * @param string $baseurl the configured Wooclap base URL
+ * @param string $callbackurl the callback URL to validate
+ * @return bool
+ */
+function wooclap_callback_matches_base_host($baseurl, $callbackurl) {
+    if (empty($callbackurl) || empty($baseurl)) {
+        return false;
+    }
+
+    $expectedhost = parse_url($baseurl, PHP_URL_HOST);
+    $actualhost = parse_url($callbackurl, PHP_URL_HOST);
+    $scheme = parse_url($callbackurl, PHP_URL_SCHEME);
+
+    if (empty($expectedhost) || empty($actualhost)) {
+        return false;
+    }
+
+    return $scheme === 'https' && strcasecmp($expectedhost, $actualhost) === 0;
+}
+
+/**
  * Check if the callback url is safe and known
- * @param string $callbackUrl
+ * @param string $callbackurl
  * @return bool
  */
 function wooclap_is_valid_callback_url($callbackurl) {
-    $baseurl = trim(get_config('wooclap', 'baseurl'), '/');
-    return $callbackurl != null && strpos($callbackurl, $baseurl) === 0;
+    return wooclap_callback_matches_base_host(get_config('wooclap', 'baseurl'), $callbackurl);
 }
