@@ -1,20 +1,68 @@
 name: Trivy Security Scan
 
+# Standalone scan, deliberately NOT the shared wooclap/devx reusable workflow:
+# this repository is public and wooclap/devx is private. GitHub refuses to start
+# a run that calls a reusable workflow from a private repository, so every run of
+# the shared workflow failed here with zero jobs. External contributors also open
+# PRs from forks, which never receive secrets, so this workflow must not need any.
+#
+# This repository's logs are public: secret findings are reported by file path
+# only, never with their content.
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [main, master, staging, production]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pull-requests: write
+
+concurrency:
+  group: trivy-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  trivy:
-    uses: wooclap/devx/.github/workflows/trivy.yml@latest
-    secrets:
-      app-id: ${{ secrets.DEVX_APP_ID }}
-      app-private-key: ${{ secrets.DEVX_APP_PRIVATE_KEY }}
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
+
+      - name: Run Trivy scan
+        env:
+          SEVERITY: CRITICAL,HIGH
+          TRIVY_DISABLE_VEX_NOTICE: "1"
+        run: |
+          set -uo pipefail
+          status=0
+
+          echo "::group::Vulnerabilities, misconfigurations, licenses"
+          if ! trivy repo --scanners vuln,misconfig,license --severity "$SEVERITY" --exit-code 1 .; then
+            status=1
+          fi
+          echo "::endgroup::"
+
+          # Secrets: JSON to a file, print affected paths only.
+          secrets_json="$(mktemp)"
+          if ! trivy repo --scanners secret --severity "$SEVERITY" --exit-code 0 \
+              --format json --output "$secrets_json" . 2>/dev/null; then
+            echo "::error::Trivy secret scan failed to run."
+            status=1
+          else
+            secret_files="$(jq -r '.Results[]? | select((.Secrets // []) | length > 0) | .Target' "$secrets_json" | sort -u)"
+            if [[ -n "$secret_files" ]]; then
+              echo "::error::Secrets detected in the following files (values not shown; run 'trivy repo --scanners secret .' locally):"
+              echo "$secret_files" | sed 's/^/  - /'
+              status=1
+            fi
+          fi
+          rm -f "$secrets_json"
+
+          exit "$status"
